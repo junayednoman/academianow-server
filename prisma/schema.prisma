@@ -1,0 +1,220 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Subject {
+  id    String @id @default(uuid())
+  name  String @unique
+  image String
+  book  Book[]
+
+  @@map("subjects")
+}
+
+model Book {
+  id        String    @id @default(uuid())
+  subjectId String
+  subject   Subject   @relation(fields: [subjectId], references: [id])
+  name      String    @unique
+  image     String
+  chapter   Chapter[]
+
+  @@map("books")
+}
+
+model Chapter {
+  id     String   @id @default(uuid())
+  bookId String
+  book   Book     @relation(fields: [bookId], references: [id])
+  name   String   @unique
+  index  Int      @unique
+  lesson Lesson[]
+
+  @@map("chapters")
+}
+
+model Lesson {
+  id          String     @id @default(uuid())
+  chapterId   String
+  chapter     Chapter    @relation(fields: [chapterId], references: [id])
+  name        String     @unique
+  explanation String
+  index       Int        @unique
+  question    Question[]
+  User        User[]
+
+  @@map("lessons")
+}
+
+model Question {
+  id            String       @id @default(uuid())
+  lessonId      String
+  lesson        Lesson       @relation(fields: [lessonId], references: [id])
+  type          QuestionType
+  images        String[]     @default([])
+  words         String[]     @default([])
+  correctAnswer String
+  explanation   String
+  index         Int          @unique
+  createdAt     DateTime     @default(now())
+  updatedAt     DateTime     @updatedAt
+  user          User[]
+
+  @@map("questions")
+}
+
+model Auth {
+  id                  String     @id @default(uuid())
+  email               String     @unique
+  password            String
+  needsPasswordChange Boolean    @default(false)
+  role                UserRole   @default(USER)
+  status              UserStatus @default(ACTIVE)
+  notificationAllows  Boolean    @default(true)
+  createdAt           DateTime   @default(now())
+  updatedAt           DateTime   @updatedAt
+  user                User?
+  admin               Admin?
+
+  @@map("auths")
+}
+
+model User {
+  id                String          @id @default(uuid())
+  email             String          @unique
+  auth              Auth            @relation(fields: [email], references: [email])
+  name              String
+  phone             String?
+  profileAvatar     String?
+  signUpSource      SignUpSource
+  practiceTime      String
+  activeQuestionId  String
+  activeQuestion    Question        @relation(fields: [activeQuestionId], references: [id])
+  activeLessonId    String
+  activeLesson      Lesson          @relation(fields: [activeLessonId], references: [id])
+  level             UserLevel
+  schoolLevel       UserSchoolLevel
+  age               Int
+  coins             Int             @default(0)
+  hearts            Int             @default(0)
+  currentStreakDays Int             @default(0)
+  xp                Int             @default(0)
+  createdAt         DateTime        @default(now())
+  updatedAt         DateTime        @updatedAt
+  subscription      Subscription?
+  payment           Payment[]
+
+  @@map("users")
+}
+
+model Admin {
+  id           String   @id @default(uuid())
+  email        String   @unique
+  auth         Auth     @relation(fields: [email], references: [email])
+  name         String
+  phone        String?
+  profileImage String?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  @@map("admins")
+}
+
+model Subscription {
+  id                 String             @id @default(uuid())
+  userId             String             @unique
+  user               User               @relation(fields: [userId], references: [id])
+  trialEnds          DateTime
+  status             SubscriptionStatus
+  subscriptionEndsAt DateTime
+  createdAt          DateTime           @default(now())
+  updatedAt          DateTime           @updatedAt
+  payment            Payment[]
+
+  @@map("subscriptions")
+}
+
+model Payment {
+  id             String        @id @default(uuid())
+  subscriptionId String
+  subscription   Subscription  @relation(fields: [subscriptionId], references: [id])
+  userId         String
+  user           User          @relation(fields: [userId], references: [id])
+  amount         Float
+  status         PaymentStatus
+  transactionId  String
+  currency       String
+  createdAt      DateTime      @default(now())
+
+  @@map("payments")
+}
+
+model Legal {
+  id              String   @id @default(uuid())
+  about           String   @default("")
+  termsConditions String   @default("")
+  privacyPolicy   String   @default("")
+  updatedAt       DateTime @updatedAt
+}
+
+enum PaymentStatus {
+  PAID
+  UNPAID
+}
+
+enum SubscriptionStatus {
+  TRIAL
+  ACTIVE
+  CANCELLED
+  EXPIRED
+}
+
+enum QuestionType {
+  IMAGE
+  SENTENCE
+}
+
+enum UserRole {
+  ADMIN
+  USER
+}
+
+enum UserStatus {
+  ACTIVE
+  BLOCKED
+  DELETED
+}
+
+enum SignUpSource {
+  FACEBOOK
+  TIKTOK
+  INSTAGRAM
+  LINKEDIN
+  GOOGLE
+  YOUTUBE
+  SCHOOL
+  OTHER
+}
+
+enum UserLevel {
+  BASIS
+  KADER
+  TL
+  HAVO
+  GYMNASIUM
+}
+
+enum UserSchoolLevel {
+  FIRST_YEAR
+  SECOND_YEAR
+  THIRD_YEAR
+  FOURTH_YEAR
+  FIFTH_YEAR
+  SIXTH_YEAR
+}
