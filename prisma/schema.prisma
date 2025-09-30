@@ -75,14 +75,27 @@ model Auth {
   password            String
   needsPasswordChange Boolean    @default(false)
   role                UserRole   @default(USER)
-  status              UserStatus @default(ACTIVE)
+  status              UserStatus @default(PENDING)
   notificationAllows  Boolean    @default(true)
   createdAt           DateTime   @default(now())
   updatedAt           DateTime   @updatedAt
   user                User?
   admin               Admin?
+  otp                 Otp?
 
   @@map("auths")
+}
+
+model Otp {
+  id         String   @id @default(uuid())
+  email      String?  @unique
+  user       Auth?    @relation(fields: [email], references: [email])
+  otp        String
+  expires    DateTime
+  attempts   Int      @default(0)
+  isVerified Boolean  @default(false)
+
+  @@map("otps")
 }
 
 model User {
@@ -92,12 +105,12 @@ model User {
   name              String
   phone             String?
   profileAvatar     String?
-  signUpSource      SignUpSource
+  signUpSource      SignUpSource?
   practiceTime      String
-  activeQuestionId  String
-  activeQuestion    Question        @relation(fields: [activeQuestionId], references: [id])
-  activeLessonId    String
-  activeLesson      Lesson          @relation(fields: [activeLessonId], references: [id])
+  activeQuestionId  String?
+  activeQuestion    Question?       @relation(fields: [activeQuestionId], references: [id])
+  activeLessonId    String?
+  activeLesson      Lesson?         @relation(fields: [activeLessonId], references: [id])
   level             UserLevel
   schoolLevel       UserSchoolLevel
   age               Int
@@ -186,6 +199,7 @@ enum UserRole {
 }
 
 enum UserStatus {
+  PENDING
   ACTIVE
   BLOCKED
   DELETED

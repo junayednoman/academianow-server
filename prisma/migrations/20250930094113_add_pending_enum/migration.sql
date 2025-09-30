@@ -1,0 +1,1 @@
+ALTER TYPE "public"."UserStatus" ADD VALUE IF NOT EXISTS 'PENDING';
