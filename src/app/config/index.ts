@@ -9,4 +9,10 @@ export default {
   email: {
     emailSendingApi: process.env.SEND_EMAIL_URL,
   },
+  jwt: {
+    accessSecret: process.env.JWT_ACCESS_SECRET,
+    accessExpiration: process.env.JWT_ACCESS_EXPIRATION,
+    refreshSecret: process.env.JWT_REFRESH_SECRET,
+    refreshExpiration: process.env.JWT_REFRESH_EXPIRATION,
+  },
 };

@@ -10,3 +10,11 @@ export const verifyOtpZod = z.object({
 });
 
 export type TVerifyOtpInput = z.infer<typeof verifyOtpZod>;
+
+export const loginZodSchema = z.object({
+  email: z.string().email("Invalid email address").trim().toLowerCase(),
+  password: z.string().min(1, "Password is required").trim(),
+  fcmToken: z.string().optional(),
+});
+
+export type TLoginInput = z.infer<typeof loginZodSchema>;

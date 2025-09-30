@@ -1,27 +1,35 @@
 import { NextFunction, Response } from "express";
-import jwt, { JwtPayload, Secret } from "jsonwebtoken"
-import config from "../../config";
-import ApiError from "../classes/ApiError";
-import { StatusCodes } from "http-status-codes";
-import { TRequest } from "../../interface/global.interface";
+import jwt, { Secret } from "jsonwebtoken";
+import { TAuthUser, TRequest } from "../interface/global.interface";
+import ApiError from "./classes/ApiError";
+import config from "../config";
 
 const authorize = (...roles: string[]) => {
   return async (req: TRequest, res: Response, next: NextFunction) => {
     try {
-      const token = req.headers.authorization
-      if (!token) throw new ApiError(StatusCodes.UNAUTHORIZED, "Unauthorized!")
-      const decodedUser = jwt.verify(token, config.access_token_secret as Secret) as JwtPayload
-      req.user = decodedUser
+      const authHeader = req.headers.authorization;
+      if (!authHeader) {
+        throw new ApiError(401, "Unauthorized");
+      }
+      const token = authHeader.split("Bearer ")[1];
+
+      if (!token) throw new ApiError(401, "Unauthorized");
+
+      const decodedUser = jwt.verify(
+        token,
+        config.jwt.accessSecret as Secret
+      ) as TAuthUser;
+      req.user = decodedUser;
 
       if (roles.length && !roles.includes(decodedUser.role)) {
-        throw new ApiError(StatusCodes.FORBIDDEN, "Forbidden!")
+        throw new ApiError(403, "Forbidden!");
       }
 
-      next()
+      next();
     } catch (error: any) {
-      next(error)
+      next(error);
     }
-  }
-}
+  };
+};
 
 export default authorize;

@@ -33,12 +33,12 @@ const globalErrorHandler = (
     }
   } else if (err.name === "ZodError") {
     status = 422;
-    const msgs = err?.issues?.map(
-      (issue: { message: string }) => issue.message
-    );
-    const msg = msgs.join(", ");
+    // const msgs = err?.issues?.map(
+    //   (issue: { message: string }) => issue.message
+    // );
+    // const msg = msgs.join(", ");
 
-    message = msg || err.issues[0]?.message || "Validation error!";
+    message =  err.issues[0]?.message || "Validation error!";
     error = err.issues;
   } else if (err instanceof ApiError) {
     status = err.statusCode;
