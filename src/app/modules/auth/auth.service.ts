@@ -12,16 +12,26 @@ import bcrypt from "bcrypt";
 import jsonwebtoken, { Secret } from "jsonwebtoken";
 import config from "../../config";
 import generateOTP from "../../utils/generateOTP";
+import jwt from "jsonwebtoken";
+import { TAuthUser } from "../../interface/global.interface";
 
 const login = async (payload: TLoginInput) => {
   const auth = await prisma.auth.findUniqueOrThrow({
     where: {
       email: payload.email,
+      NOT: [
+        {
+          status: UserStatus.DELETED,
+        },
+      ],
     },
   });
 
   if (auth.status === UserStatus.PENDING)
     throw new ApiError(400, "Please verify your account!");
+
+  if (auth.status === UserStatus.BLOCKED)
+    throw new ApiError(400, "Your account is blocked!");
 
   if (auth.provider === LoginProvider.GOOGLE)
     throw new ApiError(400, "Your account was created using Google!");
@@ -291,10 +301,40 @@ const changeAccountStatus = async (userId: string, status: UserStatus) => {
           : "";
   return { message };
 };
+
+const refreshToken = async (token: string) => {
+  if (!token) throw new ApiError(401, "Unauthorized!");
+  const decodedUser = jwt.verify(token, config.jwt.refreshSecret as Secret);
+  if (!decodedUser) throw new ApiError(401, "Unauthorized!");
+  const user = await prisma.auth.findUniqueOrThrow({
+    where: {
+      id: (decodedUser as TAuthUser).id,
+    },
+    select: {
+      id: true,
+      email: true,
+      role: true,
+    },
+  });
+
+  const jwtPayload = {
+    email: user.email,
+    role: user.role,
+    id: user.id,
+  };
+
+  const accessToken = jwt.sign(jwtPayload, config.jwt.accessSecret as Secret, {
+    expiresIn: config.jwt.accessExpiration as any,
+  });
+
+  return { accessToken };
+};
+
 export const authServices = {
   verifyOtp,
   login,
   sendOtp,
+  refreshToken,
   resetPassword,
   changePassword,
   changeAccountStatus,

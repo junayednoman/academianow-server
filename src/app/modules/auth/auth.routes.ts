@@ -40,11 +40,13 @@ router.post(
   authController.changePassword
 );
 
-router.post(
-  "/change-account-status",
+router.patch(
+  "/change-account-status/:userId",
   authorize(UserRole.ADMIN),
   handleZodValidation(changeAccountStatusZod),
   authController.changeAccountStatus
 );
+
+router.get("/refresh-token", authController.refreshToken);
 
 export const authRoutes = router;

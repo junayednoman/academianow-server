@@ -39,6 +39,5 @@ export const changeAccountStatusZod = z.object({
   status: z
     .enum([UserStatus.ACTIVE, UserStatus.DELETED, UserStatus.BLOCKED])
     .default("ACTIVE")
-    .transform(val => val.toUpperCase()),
-  userId: z.string(),
+    .transform(val => val.toUpperCase())
 });

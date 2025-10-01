@@ -69,12 +69,23 @@ const changePassword = handleAsyncRequest(
 const changeAccountStatus = handleAsyncRequest(
   async (req: TRequest, res: Response) => {
     const { message } = await authServices.changeAccountStatus(
-      req.user?.id as string,
+      req.params.userId as string,
       req.body.status
     );
     sendResponse(res, {
       message,
       data: null,
+    });
+  }
+);
+
+const refreshToken = handleAsyncRequest(
+  async (req: TRequest, res: Response) => {
+    const token = req.cookies.academiaNowRefreshToken;
+    const result = await authServices.refreshToken(token);
+    sendResponse(res, {
+      message: "Token refreshed successfully!",
+      data: result,
     });
   }
 );
@@ -86,4 +97,5 @@ export const authController = {
   resetPassword,
   changePassword,
   changeAccountStatus,
+  refreshToken,
 };
