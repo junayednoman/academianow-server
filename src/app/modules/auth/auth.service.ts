@@ -3,6 +3,7 @@ import ApiError from "../../middlewares/classes/ApiError";
 import prisma from "../../utils/prisma";
 import { sendEmail } from "../../utils/sendEmail";
 import {
+  TChangePasswordInput,
   TLoginInput,
   TResetPasswordInput,
   TVerifyOtpInput,
@@ -242,9 +243,59 @@ const resetPassword = async (payload: TResetPasswordInput) => {
   sendEmail(payload.email, subject, path, replacements);
 };
 
+const changePassword = async (
+  payload: TChangePasswordInput,
+  userId: string
+) => {
+  const auth = await prisma.auth.findUniqueOrThrow({
+    where: {
+      id: userId,
+      status: UserStatus.ACTIVE,
+    },
+  });
+
+  const hasMatched = await bcrypt.compare(payload.oldPassword, auth.password);
+  if (!hasMatched) {
+    throw new ApiError(400, "Old password is incorrect!");
+  }
+
+  const hashedPassword = await bcrypt.hash(payload.newPassword, 10);
+
+  await prisma.auth.update({
+    where: {
+      id: userId,
+    },
+    data: {
+      password: hashedPassword,
+    },
+  });
+};
+
+const changeAccountStatus = async (userId: string, status: UserStatus) => {
+  await prisma.auth.update({
+    where: {
+      id: userId,
+    },
+    data: {
+      status: status,
+    },
+  });
+
+  const message =
+    status === UserStatus.ACTIVE
+      ? "Account activated successfully!"
+      : status === "BLOCKED"
+        ? "Account blocked successfully!"
+        : status === "DELETED"
+          ? "Account deleted successfully!"
+          : "";
+  return { message };
+};
 export const authServices = {
   verifyOtp,
   login,
   sendOtp,
   resetPassword,
+  changePassword,
+  changeAccountStatus,
 };

@@ -3,6 +3,7 @@ import { sendResponse } from "../../utils/sendResponse";
 import { Request, Response } from "express";
 import { authServices } from "./auth.service";
 import config from "../../config";
+import { TRequest } from "../../interface/global.interface";
 
 const login = handleAsyncRequest(async (req: Request, res: Response) => {
   const result = await authServices.login(req.body);
@@ -52,9 +53,37 @@ const resetPassword = handleAsyncRequest(
   }
 );
 
+const changePassword = handleAsyncRequest(
+  async (req: TRequest, res: Response) => {
+    const result = await authServices.changePassword(
+      req.body,
+      req.user?.id as string
+    );
+    sendResponse(res, {
+      message: "Password changed successfully!",
+      data: result,
+    });
+  }
+);
+
+const changeAccountStatus = handleAsyncRequest(
+  async (req: TRequest, res: Response) => {
+    const { message } = await authServices.changeAccountStatus(
+      req.user?.id as string,
+      req.body.status
+    );
+    sendResponse(res, {
+      message,
+      data: null,
+    });
+  }
+);
+
 export const authController = {
   verifyOtp,
   login,
   sendOtp,
   resetPassword,
+  changePassword,
+  changeAccountStatus,
 };

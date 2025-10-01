@@ -1,5 +1,6 @@
 import z from "zod";
 import { passwordZod } from "../../validation/global.validation";
+import { UserStatus } from "../../../../generated/prisma";
 
 export const verifyOtpZod = z.object({
   email: z.string().email("Invalid email address").trim().toLowerCase(),
@@ -26,3 +27,18 @@ export const resetPasswordZod = z.object({
 });
 
 export type TResetPasswordInput = z.infer<typeof resetPasswordZod>;
+
+export const changePasswordZod = z.object({
+  oldPassword: z.string().min(1, "Old password is required").trim(),
+  newPassword: passwordZod,
+});
+
+export type TChangePasswordInput = z.infer<typeof changePasswordZod>;
+
+export const changeAccountStatusZod = z.object({
+  status: z
+    .enum([UserStatus.ACTIVE, UserStatus.DELETED, UserStatus.BLOCKED])
+    .default("ACTIVE")
+    .transform(val => val.toUpperCase()),
+  userId: z.string(),
+});

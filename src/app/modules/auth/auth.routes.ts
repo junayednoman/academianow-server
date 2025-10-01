@@ -1,11 +1,15 @@
 import { Router } from "express";
 import handleZodValidation from "../../middlewares/handleZodValidation";
 import {
+  changeAccountStatusZod,
+  changePasswordZod,
   loginZodSchema,
   resetPasswordZod,
   verifyOtpZod,
 } from "./auth.validation";
 import { authController } from "./auth.controller";
+import authorize from "../../middlewares/authorize";
+import { UserRole } from "../../../../generated/prisma";
 
 const router = Router();
 
@@ -27,6 +31,20 @@ router.post(
   "/reset-password",
   handleZodValidation(resetPasswordZod),
   authController.resetPassword
+);
+
+router.post(
+  "/change-password",
+  authorize(UserRole.ADMIN, UserRole.USER),
+  handleZodValidation(changePasswordZod),
+  authController.changePassword
+);
+
+router.post(
+  "/change-account-status",
+  authorize(UserRole.ADMIN),
+  handleZodValidation(changeAccountStatusZod),
+  authController.changeAccountStatus
 );
 
 export const authRoutes = router;
