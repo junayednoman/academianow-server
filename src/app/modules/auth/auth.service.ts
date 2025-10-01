@@ -2,7 +2,11 @@ import { LoginProvider, UserStatus } from "../../../../generated/prisma";
 import ApiError from "../../middlewares/classes/ApiError";
 import prisma from "../../utils/prisma";
 import { sendEmail } from "../../utils/sendEmail";
-import { TLoginInput, TVerifyOtpInput } from "./auth.validation";
+import {
+  TLoginInput,
+  TResetPasswordInput,
+  TVerifyOtpInput,
+} from "./auth.validation";
 import bcrypt from "bcrypt";
 import jsonwebtoken, { Secret } from "jsonwebtoken";
 import config from "../../config";
@@ -188,8 +192,59 @@ const sendOtp = async (email: string) => {
   sendEmail(email, subject, path, { otp, name: auth.user?.name as string });
 };
 
+const resetPassword = async (payload: TResetPasswordInput) => {
+  const auth = await prisma.auth.findUniqueOrThrow({
+    where: {
+      email: payload.email,
+      status: UserStatus.ACTIVE,
+    },
+    select: {
+      user: {
+        select: {
+          name: true,
+        },
+      },
+    },
+  });
+
+  const otp = await prisma.otp.findUniqueOrThrow({
+    where: {
+      email: payload.email,
+      isVerified: true,
+    },
+  });
+
+  if (!otp) throw new ApiError(401, "OTP is not verified!");
+
+  const hashedPassword = await bcrypt.hash(payload.password, 10);
+
+  await prisma.$transaction(async tn => {
+    await tn.auth.update({
+      where: {
+        email: payload.email,
+      },
+      data: {
+        password: hashedPassword,
+      },
+    });
+
+    await tn.otp.delete({
+      where: {
+        email: payload.email,
+      },
+    });
+  });
+
+  // send email
+  const subject = "Your Academianow Password Has Been Reset 🎉";
+  const path = "./src/app/emailTemplates/passwordResetSuccess.html";
+  const replacements = { name: auth.user?.name as string };
+  sendEmail(payload.email, subject, path, replacements);
+};
+
 export const authServices = {
   verifyOtp,
   login,
   sendOtp,
+  resetPassword,
 };

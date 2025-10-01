@@ -1,4 +1,5 @@
 import z from "zod";
+import { passwordZod } from "../../validation/global.validation";
 
 export const verifyOtpZod = z.object({
   email: z.string().email("Invalid email address").trim().toLowerCase(),
@@ -18,3 +19,10 @@ export const loginZodSchema = z.object({
 });
 
 export type TLoginInput = z.infer<typeof loginZodSchema>;
+
+export const resetPasswordZod = z.object({
+  email: z.string().email("Invalid email address").trim().toLowerCase(),
+  password: passwordZod,
+});
+
+export type TResetPasswordInput = z.infer<typeof resetPasswordZod>;
