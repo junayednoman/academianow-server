@@ -9,3 +9,9 @@ export const passwordZod = z
     /[^A-Za-z0-9]/,
     "Password must contain at least one special character"
   );
+
+export const phoneZod = z
+  .string()
+  .regex(/^\+?[1-9]\d{1,14}$/, "Invalid phone number format")
+  .nullish()
+  .transform(val => val ?? null);

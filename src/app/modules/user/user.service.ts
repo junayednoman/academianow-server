@@ -1,4 +1,4 @@
-import { UserRole, UserStatus } from "../../../../generated/prisma";
+import { User, UserRole, UserStatus } from "../../../../generated/prisma";
 import ApiError from "../../middlewares/classes/ApiError";
 import prisma from "../../utils/prisma";
 import { TSignUpInput } from "./user.validation";
@@ -78,6 +78,29 @@ const userSignUp = async (payload: TSignUpInput) => {
   return result;
 };
 
+const getProfile = async (email: string) => {
+  const user = await prisma.user.findUniqueOrThrow({
+    where: {
+      email: email,
+    },
+  });
+
+  return user;
+};
+
+const updateProfile = async (email: string, payload: Partial<User>) => {
+  const user = await prisma.user.update({
+    where: {
+      email: email,
+    },
+    data: payload,
+  });
+
+  return user;
+};
+
 export const userServices = {
   userSignUp,
+  getProfile,
+  updateProfile,
 };

@@ -106,7 +106,8 @@ model User {
   auth              Auth            @relation(fields: [email], references: [email])
   name              String
   phone             String?
-  profileAvatar     String?
+  avatarId          String?
+  avatar            Avatar?         @relation(fields: [avatarId], references: [id])
   signUpSource      SignUpSource?
   practiceTime      String
   activeQuestionId  String?
@@ -176,6 +177,15 @@ model Legal {
   termsConditions String   @default("")
   privacyPolicy   String   @default("")
   updatedAt       DateTime @updatedAt
+}
+
+model Avatar {
+  id    String @id @default(uuid())
+  icon  String
+  index Int    @unique
+  user  User[]
+
+  @@map("avatars")
 }
 
 enum LoginProvider {

@@ -1,5 +1,6 @@
 import { z } from "zod";
-import { passwordZod } from "../../validation/global.validation";
+import { passwordZod, phoneZod } from "../../validation/global.validation";
+import { UserLevel, UserSchoolLevel } from "../../../../generated/prisma";
 
 export const signUpValidationSchema = z.object({
   password: passwordZod,
@@ -15,11 +16,7 @@ export const signUpValidationSchema = z.object({
       .min(1, "Name is required")
       .max(100, "Name must be less than 100 characters")
       .trim(),
-    phone: z
-      .string()
-      .regex(/^\+?[1-9]\d{1,14}$/, "Invalid phone number format")
-      .nullish()
-      .transform(val => val ?? null),
+    phone: phoneZod,
     signUpSource: z
       .enum(
         [
@@ -64,3 +61,36 @@ export const signUpValidationSchema = z.object({
 export type TSignUpInput = z.infer<typeof signUpValidationSchema> & {
   phone: string | null;
 };
+
+export const updateUserZod = z.object({
+  name: z.string().optional(),
+  phone: phoneZod,
+  profileAvatar: z.string().optional(),
+  practiceTime: z.string().optional(),
+  activeQuestionId: z.string().optional(),
+  activeLessonId: z.string().optional(),
+  level: z
+    .enum([
+      UserLevel.BASIS,
+      UserLevel.GYMNASIUM,
+      UserLevel.HAVO,
+      UserLevel.KADER,
+      UserLevel.TL,
+    ])
+    .optional(),
+  schoolLevel: z
+    .enum([
+      UserSchoolLevel.FIRST_YEAR,
+      UserSchoolLevel.SECOND_YEAR,
+      UserSchoolLevel.THIRD_YEAR,
+      UserSchoolLevel.FOURTH_YEAR,
+      UserSchoolLevel.FIFTH_YEAR,
+      UserSchoolLevel.SIXTH_YEAR,
+    ])
+    .optional(),
+  age: z.string().optional(),
+  coins: z.number().optional(),
+  hearts: z.number().optional(),
+  currentStreakDays: z.number().optional(),
+  xp: z.number().optional(),
+});
