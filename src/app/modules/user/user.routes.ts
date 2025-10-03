@@ -13,6 +13,8 @@ router.post(
   userController.userSignUp
 );
 
+router.get("/", authorize(UserRole.ADMIN), userController.getAllUsers);
+router.get("/:id", authorize(UserRole.ADMIN), userController.getSingleUser);
 router.get("/profile", authorize(UserRole.USER), userController.getProfile);
 
 router.patch(

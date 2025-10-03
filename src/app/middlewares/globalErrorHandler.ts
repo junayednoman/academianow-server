@@ -21,6 +21,7 @@ const globalErrorHandler = (
     message = "Validation error!";
     error = err.message;
   } else if (err instanceof PrismaClientKnownRequestError) {
+    console.log('err', err);
     if (err.code === "P2002") {
       message = `${err.meta?.modelName === "Auth" ? "User" : err.meta?.modelName} already exists with this ${
         (err.meta?.target as string[] | number[])[0]

@@ -65,7 +65,7 @@ export type TSignUpInput = z.infer<typeof signUpValidationSchema> & {
 export const updateUserZod = z.object({
   name: z.string().optional(),
   phone: phoneZod,
-  profileAvatar: z.string().optional(),
+  avatarId: z.string().optional(),
   practiceTime: z.string().optional(),
   activeQuestionId: z.string().optional(),
   activeLessonId: z.string().optional(),
@@ -88,9 +88,11 @@ export const updateUserZod = z.object({
       UserSchoolLevel.SIXTH_YEAR,
     ])
     .optional(),
-  age: z.string().optional(),
-  coins: z.number().optional(),
-  hearts: z.number().optional(),
-  currentStreakDays: z.number().optional(),
-  xp: z.number().optional(),
+  age: z.number({ message: "Age must be a number" }).optional(),
+  coins: z.number({ message: "Coins must be a number" }).optional(),
+  hearts: z.number({ message: "Hearts must be a number" }).optional(),
+  currentStreakDays: z
+    .number({ message: "Current Streak Days must be a number" })
+    .optional(),
+  xp: z.number({ message: "XP must be a number" }).optional(),
 });

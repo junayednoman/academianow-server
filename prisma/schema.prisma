@@ -84,6 +84,7 @@ model Auth {
   otp                 Otp?
   fcmToken            String?
   provider            LoginProvider @default(CREDENTIAL)
+  subscription        Subscription?
 
   @@map("auths")
 }
@@ -123,7 +124,6 @@ model User {
   xp                Int             @default(0)
   createdAt         DateTime        @default(now())
   updatedAt         DateTime        @updatedAt
-  subscription      Subscription?
   payment           Payment[]
 
   @@map("users")
@@ -144,8 +144,8 @@ model Admin {
 
 model Subscription {
   id                 String             @id @default(uuid())
-  userId             String             @unique
-  user               User               @relation(fields: [userId], references: [id])
+  authId             String             @unique
+  auth               Auth               @relation(fields: [authId], references: [id])
   trialEnds          DateTime
   status             SubscriptionStatus
   subscriptionEndsAt DateTime

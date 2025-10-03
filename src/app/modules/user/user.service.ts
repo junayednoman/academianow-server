@@ -1,10 +1,20 @@
-import { User, UserRole, UserStatus } from "../../../../generated/prisma";
+import {
+  Prisma,
+  User,
+  UserRole,
+  UserStatus,
+} from "../../../../generated/prisma";
 import ApiError from "../../middlewares/classes/ApiError";
 import prisma from "../../utils/prisma";
 import { TSignUpInput } from "./user.validation";
 import bcrypt from "bcrypt";
 import generateOTP from "../../utils/generateOTP";
 import { sendEmail } from "../../utils/sendEmail";
+import {
+  calculatePagination,
+  TOptions,
+} from "../../utils/paginationCalculation";
+import { authSearchAbleFields } from "./user.constant";
 
 const userSignUp = async (payload: TSignUpInput) => {
   const hashedPassword = await bcrypt.hash(payload.password, 10);
@@ -78,10 +88,122 @@ const userSignUp = async (payload: TSignUpInput) => {
   return result;
 };
 
+const getAllUsers = async (query: Record<string, any>, options: TOptions) => {
+  const { searchTerm, status, type } = query;
+  const andConditions: Prisma.AuthWhereInput[] = [];
+
+  if (searchTerm) {
+    andConditions.push({
+      user: {
+        OR: authSearchAbleFields.map(field => ({
+          [field]: {
+            contains: searchTerm,
+            mode: "insensitive",
+          },
+        })),
+      },
+    });
+  }
+  if (status) {
+    andConditions.push({
+      status: status,
+    });
+  }
+  if (type) {
+    if (type === "subscriber") {
+      andConditions.push({
+        NOT: {
+          subscription: null,
+        },
+      });
+    }
+  } else if (type === "non-subscriber") {
+    andConditions.push({
+      subscription: null,
+    });
+  }
+
+  andConditions.push({
+    role: UserRole.USER,
+  });
+
+  const whereConditions: Prisma.AuthWhereInput =
+    andConditions.length > 0 ? { AND: andConditions } : {};
+  const { page, take, skip, sortBy, orderBy } = calculatePagination(options);
+
+  const users = await prisma.auth.findMany({
+    where: whereConditions,
+    select: {
+      id: true,
+      status: true,
+      subscription: true,
+      user: {
+        select: {
+          name: true,
+          email: true,
+          age: true,
+          signUpSource: true,
+          createdAt: true,
+          avatar: {
+            select: {
+              icon: true,
+            },
+          },
+        },
+      },
+    },
+    skip,
+    take,
+    orderBy: sortBy && orderBy ? { [sortBy]: orderBy } : { createdAt: "desc" },
+  });
+
+  const total = await prisma.auth.count({
+    where: whereConditions,
+  });
+
+  const meta = {
+    page,
+    limit: take,
+    total,
+  };
+  return { meta, users };
+};
+
+const getSingleUser = async (id: string) => {
+  const user = await prisma.auth.findUnique({
+    where: {
+      id: id,
+    },
+    select: {
+      user: true,
+    },
+  });
+
+  return user;
+};
+
 const getProfile = async (email: string) => {
   const user = await prisma.user.findUniqueOrThrow({
     where: {
       email: email,
+    },
+    include: {
+      avatar: {
+        select: {
+          icon: true,
+        },
+      },
+      activeLesson: {
+        select: {
+          id: true,
+          name: true,
+        },
+      },
+      activeQuestion: {
+        select: {
+          id: true,
+        },
+      },
     },
   });
 
@@ -89,6 +211,27 @@ const getProfile = async (email: string) => {
 };
 
 const updateProfile = async (email: string, payload: Partial<User>) => {
+  if (payload.avatarId) {
+    await prisma.avatar.findUniqueOrThrow({
+      where: {
+        id: payload.avatarId,
+      },
+    });
+  }
+  if (payload.activeLessonId) {
+    await prisma.lesson.findUniqueOrThrow({
+      where: {
+        id: payload.activeLessonId,
+      },
+    });
+  }
+  if (payload.activeQuestionId) {
+    await prisma.question.findUniqueOrThrow({
+      where: {
+        id: payload.activeQuestionId,
+      },
+    });
+  }
   const user = await prisma.user.update({
     where: {
       email: email,
@@ -101,6 +244,8 @@ const updateProfile = async (email: string, payload: Partial<User>) => {
 
 export const userServices = {
   userSignUp,
+  getAllUsers,
   getProfile,
   updateProfile,
+  getSingleUser,
 };
