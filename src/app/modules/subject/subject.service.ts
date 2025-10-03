@@ -79,13 +79,7 @@ const updateSubject = async (
 
 const deleteSubject = async (id: string) => {
   const subject = await prisma.subject.findUniqueOrThrow({ where: { id } });
-
-  const associatedBooks = await prisma.book.findFirst({
-    where: { subjectId: id },
-  });
-  if (associatedBooks)
-    throw new ApiError(400, "Subject is associated with books!");
-
+  
   const result = await prisma.subject.delete({ where: { id } });
 
   if (result && subject.image) {

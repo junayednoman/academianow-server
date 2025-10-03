@@ -21,7 +21,7 @@ const globalErrorHandler = (
     message = "Validation error!";
     error = err.message;
   } else if (err instanceof PrismaClientKnownRequestError) {
-    console.log('err', err);
+    console.log("err", err);
     if (err.code === "P2002") {
       message = `${err.meta?.modelName === "Auth" ? "User" : err.meta?.modelName} already exists with this ${
         (err.meta?.target as string[] | number[])[0]
@@ -31,15 +31,14 @@ const globalErrorHandler = (
       status = 404;
       message = `${err.meta?.modelName === "Auth" ? "User" : err.meta?.modelName} not found!`;
       error = err.meta;
+    } else if (err.code === "P2003") {
+      status = 409;
+      message = `${err.meta?.modelName === "Auth" ? "User" : err.meta?.modelName} is associated with other data!`;
+      error = err.meta;
     }
   } else if (err.name === "ZodError") {
     status = 422;
-    // const msgs = err?.issues?.map(
-    //   (issue: { message: string }) => issue.message
-    // );
-    // const msg = msgs.join(", ");
-
-    message =  err.issues[0]?.message || "Validation error!";
+    message = err.issues[0]?.message || "Validation error!";
     error = err.issues;
   } else if (err instanceof ApiError) {
     status = err.statusCode;
