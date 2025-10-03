@@ -11,6 +11,7 @@ datasource db {
 model Subject {
   id    String @id @default(uuid())
   name  String @unique
+  index Int    @unique
   image String
   book  Book[]
 

@@ -14,7 +14,11 @@ router.post(
 );
 
 router.get("/", authorize(UserRole.ADMIN), userController.getAllUsers);
-router.get("/:id", authorize(UserRole.ADMIN), userController.getSingleUser);
+router.get(
+  "/:id",
+  authorize(UserRole.ADMIN, UserRole.USER),
+  userController.getSingleUser
+);
 router.get("/profile", authorize(UserRole.USER), userController.getProfile);
 
 router.patch(

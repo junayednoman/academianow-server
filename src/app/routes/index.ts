@@ -3,6 +3,7 @@ import { userRoutes } from "../modules/user/user.routes";
 import { authRoutes } from "../modules/auth/auth.routes";
 import { adminRoutes } from "../modules/admin/admin.routes";
 import { avatarRoutes } from "../modules/avatar/avatar.routes";
+import { subjectRoutes } from "../modules/subject/subject.routes";
 
 const router = Router();
 
@@ -11,6 +12,7 @@ const routes = [
   { path: "/auths", route: authRoutes },
   { path: "/admins", route: adminRoutes },
   { path: "/avatars", route: avatarRoutes },
+  { path: "/subjects", route: subjectRoutes },
 ];
 
 routes.forEach(route => {
