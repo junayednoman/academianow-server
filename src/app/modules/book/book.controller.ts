@@ -10,10 +10,14 @@ const createBook = handleAsyncRequest(async (req: TRequest, res: Response) => {
   sendResponse(res, { message: "Book created successfully!", data: result });
 });
 
-const getAllBooks = handleAsyncRequest(async (req: TRequest, res: Response) => {
-  const result = await bookServices.getAllBooks();
-  sendResponse(res, { message: "Books fetched successfully!", data: result });
-});
+const getAllBooksBySubjectId = handleAsyncRequest(
+  async (req: TRequest, res: Response) => {
+    const result = await bookServices.getAllBooksBySubjectId(
+      req.params.subjectId as string
+    );
+    sendResponse(res, { message: "Books fetched successfully!", data: result });
+  }
+);
 
 const getSingleBook = handleAsyncRequest(
   async (req: TRequest, res: Response) => {
@@ -40,7 +44,7 @@ const deleteBook = handleAsyncRequest(async (req: TRequest, res: Response) => {
 
 export const bookController = {
   createBook,
-  getAllBooks,
+  getAllBooksBySubjectId,
   getSingleBook,
   updateBook,
   deleteBook,

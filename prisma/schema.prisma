@@ -33,8 +33,8 @@ model Chapter {
   id     String   @id @default(uuid())
   bookId String
   book   Book     @relation(fields: [bookId], references: [id])
-  name   String   @unique
-  index  Int      @unique
+  name   String
+  index  Int
   lesson Lesson[]
 
   @@map("chapters")
@@ -44,9 +44,9 @@ model Lesson {
   id          String     @id @default(uuid())
   chapterId   String
   chapter     Chapter    @relation(fields: [chapterId], references: [id])
-  name        String     @unique
+  name        String
   explanation String
-  index       Int        @unique
+  index       Int 
   question    Question[]
   User        User[]
 

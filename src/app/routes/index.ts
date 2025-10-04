@@ -5,6 +5,8 @@ import { adminRoutes } from "../modules/admin/admin.routes";
 import { avatarRoutes } from "../modules/avatar/avatar.routes";
 import { subjectRoutes } from "../modules/subject/subject.routes";
 import { bookRoutes } from "../modules/book/book.routes";
+import { chapterRoutes } from "../modules/chapter/chapter.routes";
+import { lessonRoutes } from "../modules/lesson/lesson.routes";
 
 const router = Router();
 
@@ -15,6 +17,8 @@ const routes = [
   { path: "/avatars", route: avatarRoutes },
   { path: "/subjects", route: subjectRoutes },
   { path: "/books", route: bookRoutes },
+  { path: "/chapters", route: chapterRoutes },
+  { path: "/lessons", route: lessonRoutes },
 ];
 
 routes.forEach(route => {

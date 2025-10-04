@@ -21,7 +21,6 @@ const globalErrorHandler = (
     message = "Validation error!";
     error = err.message;
   } else if (err instanceof PrismaClientKnownRequestError) {
-    console.log("err", err);
     if (err.code === "P2002") {
       message = `${err.meta?.modelName === "Auth" ? "User" : err.meta?.modelName} already exists with this ${
         (err.meta?.target as string[] | number[])[0]
@@ -32,8 +31,26 @@ const globalErrorHandler = (
       message = `${err.meta?.modelName === "Auth" ? "User" : err.meta?.modelName} not found!`;
       error = err.meta;
     } else if (err.code === "P2003") {
-      status = 409;
-      message = `${err.meta?.modelName === "Auth" ? "User" : err.meta?.modelName} is associated with other data!`;
+      const constraint = err.meta?.constraint as string | undefined;
+      const modelName = err.meta?.modelName || "Record";
+
+      if (constraint) {
+        if (req.method === "DELETE") {
+          message = `${modelName} cannot be deleted because it is associated with other data!`;
+          status = 409;
+        } else if (["POST", "PUT", "PATCH"].includes(req.method)) {
+          const parentTable = constraint?.split("_")[1] || "parent";
+          message = `Invalid ${parentTable} id for ${modelName}!`;
+          status = 400;
+        } else {
+          message = `${modelName} is associated with other data!`;
+          status = 409;
+        }
+      } else {
+        message = `${modelName} is associated with other data!`;
+        status = 409;
+      }
+
       error = err.meta;
     }
   } else if (err.name === "ZodError") {
@@ -62,7 +79,6 @@ const globalErrorHandler = (
     }
   }
 
-  // send error response
   res.status(status).json({
     success,
     message,

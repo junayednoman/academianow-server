@@ -20,8 +20,11 @@ const createBook = async (payload: Book, file: TFile) => {
   return prisma.book.create({ data: payload });
 };
 
-const getAllBooks = async () => {
+const getAllBooksBySubjectId = async (subjectId: string) => {
   return prisma.book.findMany({
+    where: {
+      subjectId,
+    },
     include: { subject: true },
     orderBy: { name: "asc" },
   });
@@ -69,7 +72,7 @@ const updateBook = async (id: string, payload: Partial<Book>, file?: TFile) => {
 
 const deleteBook = async (id: string) => {
   const book = await prisma.book.findUniqueOrThrow({ where: { id } });
-  
+
   const result = await prisma.book.delete({ where: { id } });
 
   if (result && book.image) {
@@ -81,7 +84,7 @@ const deleteBook = async (id: string) => {
 
 export const bookServices = {
   createBook,
-  getAllBooks,
+  getAllBooksBySubjectId,
   getSingleBook,
   updateBook,
   deleteBook,
