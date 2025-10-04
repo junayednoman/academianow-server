@@ -7,6 +7,8 @@ import { subjectRoutes } from "../modules/subject/subject.routes";
 import { bookRoutes } from "../modules/book/book.routes";
 import { chapterRoutes } from "../modules/chapter/chapter.routes";
 import { lessonRoutes } from "../modules/lesson/lesson.routes";
+import { questionRoutes } from "../modules/question/question.routes";
+import { fileRoutes } from "../modules/uploadFile/uploadFile.routes";
 
 const router = Router();
 
@@ -19,6 +21,8 @@ const routes = [
   { path: "/books", route: bookRoutes },
   { path: "/chapters", route: chapterRoutes },
   { path: "/lessons", route: lessonRoutes },
+  { path: "/questions", route: questionRoutes },
+  { path: "/upload-files", route: fileRoutes },
 ];
 
 routes.forEach(route => {

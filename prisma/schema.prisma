@@ -46,7 +46,7 @@ model Lesson {
   chapter     Chapter    @relation(fields: [chapterId], references: [id])
   name        String
   explanation String
-  index       Int 
+  index       Int
   question    Question[]
   User        User[]
 
@@ -56,13 +56,14 @@ model Lesson {
 model Question {
   id            String       @id @default(uuid())
   lessonId      String
+  question      String
   lesson        Lesson       @relation(fields: [lessonId], references: [id])
   type          QuestionType
   images        String[]     @default([])
   words         String[]     @default([])
   correctAnswer String
   explanation   String
-  index         Int          @unique
+  index         Int
   createdAt     DateTime     @default(now())
   updatedAt     DateTime     @updatedAt
   user          User[]
