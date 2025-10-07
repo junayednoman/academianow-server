@@ -342,6 +342,25 @@ const updateLastPracticeDate = async (
   return result;
 };
 
+const getUserRanking = async () => {
+  const users = await prisma.user.findMany({
+    orderBy: {
+      xp: "desc",
+    },
+    select: {
+      name: true,
+      avatar: {
+        select: {
+          icon: true,
+        },
+      },
+      xp: true,
+    },
+  });
+
+  return users;
+};
+
 export const userServices = {
   userSignUp,
   getAllUsers,
@@ -349,4 +368,5 @@ export const userServices = {
   getProfile,
   updateProfile,
   updateLastPracticeDate,
+  getUserRanking,
 };

@@ -14,6 +14,7 @@ router.post(
 );
 
 router.get("/", authorize(UserRole.ADMIN), userController.getAllUsers);
+router.get("/ranking", userController.getUserRanking);
 router.get("/profile", authorize(UserRole.USER), userController.getProfile);
 router.get(
   "/:id",

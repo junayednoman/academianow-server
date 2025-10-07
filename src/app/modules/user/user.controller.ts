@@ -66,6 +66,16 @@ const updateLastPracticeDate = handleAsyncRequest(
   }
 );
 
+const getUserRanking = handleAsyncRequest(
+  async (_req: TRequest, res: Response) => {
+    const result = await userServices.getUserRanking();
+    sendResponse(res, {
+      message: "User ranking fetched successfully!",
+      data: result,
+    });
+  }
+);
+
 export const userController = {
   userSignUp,
   getAllUsers,
@@ -73,4 +83,5 @@ export const userController = {
   getProfile,
   updateProfile,
   updateLastPracticeDate,
+  getUserRanking,
 };
