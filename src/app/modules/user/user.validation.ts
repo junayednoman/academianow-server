@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { passwordZod, phoneZod } from "../../validation/global.validation";
-import { UserLevel, UserSchoolLevel } from "../../../../generated/prisma";
+import { UserLevel, UserSchoolLevel } from "@prisma/client";
 
 export const signUpValidationSchema = z.object({
   password: passwordZod,
@@ -91,8 +91,5 @@ export const updateUserZod = z.object({
   age: z.number({ message: "Age must be a number" }).optional(),
   coins: z.number({ message: "Coins must be a number" }).optional(),
   hearts: z.number({ message: "Hearts must be a number" }).optional(),
-  currentStreakDays: z
-    .number({ message: "Current Streak Days must be a number" })
-    .optional(),
   xp: z.number({ message: "XP must be a number" }).optional(),
 });

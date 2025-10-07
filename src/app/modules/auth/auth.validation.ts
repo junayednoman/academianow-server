@@ -1,6 +1,6 @@
 import z from "zod";
 import { passwordZod } from "../../validation/global.validation";
-import { UserStatus } from "../../../../generated/prisma";
+import { UserStatus } from "@prisma/client";
 
 export const verifyOtpZod = z.object({
   email: z.string().email("Invalid email address").trim().toLowerCase(),
@@ -39,5 +39,5 @@ export const changeAccountStatusZod = z.object({
   status: z
     .enum([UserStatus.ACTIVE, UserStatus.DELETED, UserStatus.BLOCKED])
     .default("ACTIVE")
-    .transform(val => val.toUpperCase())
+    .transform(val => val.toUpperCase()),
 });

@@ -1,4 +1,4 @@
-import { LoginProvider, UserStatus } from "../../../../generated/prisma";
+import { LoginProvider, UserStatus } from "@prisma/client";
 import ApiError from "../../middlewares/classes/ApiError";
 import prisma from "../../utils/prisma";
 import { sendEmail } from "../../utils/sendEmail";

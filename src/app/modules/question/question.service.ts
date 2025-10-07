@@ -1,4 +1,4 @@
-import { Question } from "../../../../generated/prisma";
+import { Question } from "@prisma/client";
 import ApiError from "../../middlewares/classes/ApiError";
 import { deleteFromS3 } from "../../utils/awss3";
 import prisma from "../../utils/prisma";

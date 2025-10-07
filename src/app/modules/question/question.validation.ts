@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { QuestionType } from "../../../../generated/prisma";
+import { QuestionType } from "@prisma/client";
 
 export const createQuestionZod = z.object({
   lessonId: z.string(),

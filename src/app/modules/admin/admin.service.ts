@@ -1,4 +1,4 @@
-import { Admin } from "../../../../generated/prisma";
+import { Admin } from "@prisma/client";
 import { TFile } from "../../interface/file.interface";
 import { deleteFromS3, uploadToS3 } from "../../utils/awss3";
 import prisma from "../../utils/prisma";

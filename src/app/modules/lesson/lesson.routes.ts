@@ -1,7 +1,7 @@
 import { Router } from "express";
 import { lessonController } from "./lesson.controller";
 import authorize from "../../middlewares/authorize";
-import { UserRole } from "../../../../generated/prisma";
+import { UserRole } from "@prisma/client";
 import { upload } from "../../utils/awss3";
 import handleZodValidation from "../../middlewares/handleZodValidation";
 import { lessonZod } from "./lesson.validation";

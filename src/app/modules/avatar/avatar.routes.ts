@@ -2,7 +2,7 @@ import { Router } from "express";
 import { avatarController } from "./avatar.controller";
 import { upload } from "../../utils/awss3";
 import authorize from "../../middlewares/authorize";
-import { UserRole } from "../../../../generated/prisma";
+import { UserRole } from "@prisma/client";
 import handleZodValidation from "../../middlewares/handleZodValidation";
 import { avatarZod } from "./avatar.validation";
 

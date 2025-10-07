@@ -1,4 +1,4 @@
-import { Chapter } from "../../../../generated/prisma";
+import { Chapter } from "@prisma/client";
 import prisma from "../../utils/prisma";
 import ApiError from "../../middlewares/classes/ApiError";
 

@@ -53,10 +53,23 @@ const updateProfile = handleAsyncRequest(
   }
 );
 
+const updateLastPracticeDate = handleAsyncRequest(
+  async (req: TRequest, res: Response) => {
+    const result = await userServices.updateLastPracticeDate(
+      req.user?.email as string
+    );
+    sendResponse(res, {
+      message: "Date updated successfully!",
+      data: result,
+    });
+  }
+);
+
 export const userController = {
   userSignUp,
   getAllUsers,
   getSingleUser,
   getProfile,
   updateProfile,
+  updateLastPracticeDate,
 };

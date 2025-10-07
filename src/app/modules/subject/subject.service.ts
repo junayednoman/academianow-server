@@ -1,4 +1,4 @@
-import { Subject } from "../../../../generated/prisma";
+import { Subject } from "@prisma/client";
 import { TFile } from "../../interface/file.interface";
 import ApiError from "../../middlewares/classes/ApiError";
 import { deleteFromS3, uploadToS3 } from "../../utils/awss3";
@@ -79,7 +79,7 @@ const updateSubject = async (
 
 const deleteSubject = async (id: string) => {
   const subject = await prisma.subject.findUniqueOrThrow({ where: { id } });
-  
+
   const result = await prisma.subject.delete({ where: { id } });
 
   if (result && subject.image) {

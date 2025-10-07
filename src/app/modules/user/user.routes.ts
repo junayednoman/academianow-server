@@ -3,7 +3,7 @@ import { userController } from "./user.controller";
 import handleZodValidation from "../../middlewares/handleZodValidation";
 import { signUpValidationSchema, updateUserZod } from "./user.validation";
 import authorize from "../../middlewares/authorize";
-import { UserRole } from "../../../../generated/prisma";
+import { UserRole } from "@prisma/client";
 
 const router = Router();
 
@@ -14,18 +14,24 @@ router.post(
 );
 
 router.get("/", authorize(UserRole.ADMIN), userController.getAllUsers);
+router.get("/profile", authorize(UserRole.USER), userController.getProfile);
 router.get(
   "/:id",
   authorize(UserRole.ADMIN, UserRole.USER),
   userController.getSingleUser
 );
-router.get("/profile", authorize(UserRole.USER), userController.getProfile);
 
 router.patch(
   "/",
   authorize(UserRole.USER),
   handleZodValidation(updateUserZod),
   userController.updateProfile
+);
+
+router.patch(
+  "/update-practice-date",
+  authorize(UserRole.USER),
+  userController.updateLastPracticeDate
 );
 
 export const userRoutes = router;

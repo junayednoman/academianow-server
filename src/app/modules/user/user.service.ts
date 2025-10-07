@@ -1,9 +1,4 @@
-import {
-  Prisma,
-  User,
-  UserRole,
-  UserStatus,
-} from "../../../../generated/prisma";
+import { Prisma, User, UserRole, UserStatus } from "@prisma/client";
 import ApiError from "../../middlewares/classes/ApiError";
 import prisma from "../../utils/prisma";
 import { TSignUpInput } from "./user.validation";
@@ -15,6 +10,7 @@ import {
   TOptions,
 } from "../../utils/paginationCalculation";
 import { authSearchAbleFields } from "./user.constant";
+import { differenceInCalendarDays } from "date-fns";
 
 const userSignUp = async (payload: TSignUpInput) => {
   const hashedPassword = await bcrypt.hash(payload.password, 10);
@@ -197,6 +193,24 @@ const getProfile = async (email: string) => {
         select: {
           id: true,
           name: true,
+          chapter: {
+            select: {
+              id: true,
+              name: true,
+              book: {
+                select: {
+                  id: true,
+                  name: true,
+                  subject: {
+                    select: {
+                      id: true,
+                      name: true,
+                    },
+                  },
+                },
+              },
+            },
+          },
         },
       },
       activeQuestion: {
@@ -207,7 +221,37 @@ const getProfile = async (email: string) => {
     },
   });
 
-  return user;
+  // --- streak update logic ---
+  const today = new Date();
+  const diff = user.lastPracticeDate
+    ? differenceInCalendarDays(today, user.lastPracticeDate)
+    : null;
+
+  if (diff !== null) {
+    if (diff === 1) {
+      // consecutive day → increase streak
+      user.currentStreak += 1;
+    } else if (diff > 1) {
+      // missed → reset streak
+      user.currentStreak = 0;
+    }
+    // update DB only if streak changed
+    if (diff >= 1) {
+      await prisma.user.update({
+        where: { email },
+        data: {
+          lastPracticeDate: today,
+          currentStreak: user.currentStreak,
+        },
+      });
+    }
+  }
+
+  const behindOf = await prisma.user.count({
+    where: { xp: { gt: user.xp } },
+  });
+
+  return { ...user, rank: behindOf + 1 };
 };
 
 const updateProfile = async (email: string, payload: Partial<User>) => {
@@ -242,10 +286,46 @@ const updateProfile = async (email: string, payload: Partial<User>) => {
   return user;
 };
 
+const updateLastPracticeDate = async (email: string) => {
+  const user = await prisma.user.findUniqueOrThrow({
+    where: { email },
+    select: { lastPracticeDate: true, currentStreak: true },
+  });
+
+  const today = new Date();
+
+  if (!user.lastPracticeDate) {
+    return prisma.user.update({
+      where: { email },
+      data: { lastPracticeDate: today, currentStreak: 1 },
+    });
+  }
+
+  const diff = differenceInCalendarDays(today, user.lastPracticeDate);
+
+  if (diff === 0) return;
+
+  if (diff === 1) {
+    return prisma.user.update({
+      where: { email },
+      data: {
+        lastPracticeDate: today,
+        currentStreak: user.currentStreak + 1,
+      },
+    });
+  }
+
+  return prisma.user.update({
+    where: { email },
+    data: { lastPracticeDate: today, currentStreak: 1 },
+  });
+};
+
 export const userServices = {
   userSignUp,
   getAllUsers,
+  getSingleUser,
   getProfile,
   updateProfile,
-  getSingleUser,
+  updateLastPracticeDate,
 };

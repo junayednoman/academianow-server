@@ -9,7 +9,7 @@ import {
 } from "./auth.validation";
 import { authController } from "./auth.controller";
 import authorize from "../../middlewares/authorize";
-import { UserRole } from "../../../../generated/prisma";
+import { UserRole } from "@prisma/client";
 
 const router = Router();
 

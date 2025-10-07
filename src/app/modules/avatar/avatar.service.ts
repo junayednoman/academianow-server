@@ -1,4 +1,4 @@
-import { Avatar } from "../../../../generated/prisma";
+import { Avatar } from "@prisma/client";
 import { TFile } from "../../interface/file.interface";
 import ApiError from "../../middlewares/classes/ApiError";
 import { deleteFromS3, uploadToS3 } from "../../utils/awss3";

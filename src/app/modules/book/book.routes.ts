@@ -2,7 +2,7 @@ import { Router } from "express";
 import { bookController } from "./book.controller";
 import { upload } from "../../utils/awss3";
 import authorize from "../../middlewares/authorize";
-import { UserRole } from "../../../../generated/prisma";
+import { UserRole } from "@prisma/client";
 import handleZodValidation from "../../middlewares/handleZodValidation";
 import { bookZod } from "./book.validation";
 

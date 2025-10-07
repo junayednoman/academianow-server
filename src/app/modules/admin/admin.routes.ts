@@ -1,10 +1,10 @@
 import { Router } from "express";
 import authorize from "../../middlewares/authorize";
-import { UserRole } from "../../../../generated/prisma";
 import { adminController } from "./admin.controller";
 import handleZodValidation from "../../middlewares/handleZodValidation";
 import { profileUpdateZod } from "./admin.validation";
 import { upload } from "../../utils/awss3";
+import { UserRole } from "@prisma/client";
 
 const router = Router();
 

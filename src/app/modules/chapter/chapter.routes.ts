@@ -1,7 +1,7 @@
 import { Router } from "express";
 import { chapterController } from "./chapter.controller";
 import authorize from "../../middlewares/authorize";
-import { UserRole } from "../../../../generated/prisma";
+import { UserRole } from "@prisma/client";
 import handleZodValidation from "../../middlewares/handleZodValidation";
 import { chapterZod } from "./chapter.validation";
 

@@ -1,7 +1,7 @@
 import { Router } from "express";
 import { questionController } from "./question.controller";
 import authorize from "../../middlewares/authorize";
-import { UserRole } from "../../../../generated/prisma";
+import { UserRole } from "@prisma/client";
 import handleZodValidation from "../../middlewares/handleZodValidation";
 import { createQuestionZod, updateQuestionZod } from "./question.validation";
 import { upload } from "../../utils/awss3";
