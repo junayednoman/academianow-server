@@ -103,30 +103,31 @@ model Otp {
 }
 
 model User {
-  id               String          @id @default(uuid())
-  email            String          @unique
-  auth             Auth            @relation(fields: [email], references: [email])
-  name             String
-  phone            String?
-  avatarId         String?
-  avatar           Avatar?         @relation(fields: [avatarId], references: [id])
-  signUpSource     SignUpSource?
-  practiceTime     String
-  activeQuestionId String?
-  activeQuestion   Question?       @relation(fields: [activeQuestionId], references: [id])
-  activeLessonId   String?
-  activeLesson     Lesson?         @relation(fields: [activeLessonId], references: [id])
-  level            UserLevel
-  schoolLevel      UserSchoolLevel
-  age              Int
-  coins            Int             @default(0)
-  hearts           Int             @default(0)
-  currentStreak    Int             @default(0)
-  lastPracticeDate DateTime?
-  xp               Int             @default(0)
-  createdAt        DateTime        @default(now())
-  updatedAt        DateTime        @updatedAt
-  payment          Payment[]
+  id                  String          @id @default(uuid())
+  email               String          @unique
+  auth                Auth            @relation(fields: [email], references: [email])
+  name                String
+  phone               String?
+  avatarId            String?
+  avatar              Avatar?         @relation(fields: [avatarId], references: [id])
+  signUpSource        SignUpSource?
+  practiceTime        String
+  activeQuestionId    String?
+  activeQuestion      Question?       @relation(fields: [activeQuestionId], references: [id])
+  activeLessonId      String?
+  activeLesson        Lesson?         @relation(fields: [activeLessonId], references: [id])
+  level               UserLevel
+  schoolLevel         UserSchoolLevel
+  age                 Int
+  coins               Int             @default(0)
+  hearts              Int             @default(0)
+  currentStreak       Int             @default(0)
+  lastPracticeDate    DateTime?
+  streakFreezeBalance Int?            @default(0)
+  xp                  Int             @default(0)
+  createdAt           DateTime        @default(now())
+  updatedAt           DateTime        @updatedAt
+  payment             Payment[]
 
   @@map("users")
 }

@@ -56,7 +56,8 @@ const updateProfile = handleAsyncRequest(
 const updateLastPracticeDate = handleAsyncRequest(
   async (req: TRequest, res: Response) => {
     const result = await userServices.updateLastPracticeDate(
-      req.user?.email as string
+      req.user?.email as string,
+      req.body
     );
     sendResponse(res, {
       message: "Date updated successfully!",

@@ -286,39 +286,60 @@ const updateProfile = async (email: string, payload: Partial<User>) => {
   return user;
 };
 
-const updateLastPracticeDate = async (email: string) => {
+const updateLastPracticeDate = async (
+  email: string,
+  payload: { streakFreeze: boolean }
+) => {
   const user = await prisma.user.findUniqueOrThrow({
     where: { email },
-    select: { lastPracticeDate: true, currentStreak: true },
+    select: {
+      lastPracticeDate: true,
+      currentStreak: true,
+      streakFreezeBalance: true,
+    },
   });
+
+  if (
+    (payload?.streakFreeze && !user.streakFreezeBalance) ||
+    (user.streakFreezeBalance && user.streakFreezeBalance < 1)
+  )
+    throw new ApiError(400, "Streak freeze balance is not enough");
 
   const today = new Date();
 
-  if (!user.lastPracticeDate) {
-    return prisma.user.update({
+  const result = await prisma.$transaction(async tn => {
+    if (!user.lastPracticeDate) {
+      return await tn.user.update({
+        where: { email },
+        data: { lastPracticeDate: today, currentStreak: 1 },
+      });
+    }
+
+    const diff = differenceInCalendarDays(today, user.lastPracticeDate);
+
+    if (diff === 0) return;
+
+    if (diff === 1) {
+      const updateData = {
+        lastPracticeDate: today,
+        currentStreak: user.currentStreak + 1,
+      } as Partial<User>;
+      if (payload?.streakFreeze) {
+        updateData.streakFreezeBalance = user.streakFreezeBalance! - 1;
+      }
+      return await tn.user.update({
+        where: { email },
+        data: updateData,
+      });
+    }
+
+    return await tn.user.update({
       where: { email },
       data: { lastPracticeDate: today, currentStreak: 1 },
     });
-  }
-
-  const diff = differenceInCalendarDays(today, user.lastPracticeDate);
-
-  if (diff === 0) return;
-
-  if (diff === 1) {
-    return prisma.user.update({
-      where: { email },
-      data: {
-        lastPracticeDate: today,
-        currentStreak: user.currentStreak + 1,
-      },
-    });
-  }
-
-  return prisma.user.update({
-    where: { email },
-    data: { lastPracticeDate: today, currentStreak: 1 },
   });
+
+  return result;
 };
 
 export const userServices = {
