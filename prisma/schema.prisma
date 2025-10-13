@@ -191,6 +191,16 @@ model Avatar {
   @@map("avatars")
 }
 
+model GoldPackage {
+  id        String   @id @default(uuid())
+  golds     Int
+  price     Float
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("gold_packages")
+}
+
 enum LoginProvider {
   GOOGLE
   CREDENTIAL
