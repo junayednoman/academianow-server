@@ -223,6 +223,7 @@ const getProfile = async (email: string) => {
 
   // --- streak update logic ---
   const today = new Date();
+  
   const diff = user.lastPracticeDate
     ? differenceInCalendarDays(today, user.lastPracticeDate)
     : null;
@@ -250,6 +251,17 @@ const getProfile = async (email: string) => {
   const behindOf = await prisma.user.count({
     where: { xp: { gt: user.xp } },
   });
+
+  // reset heart
+  if (
+    !user.lastHeartReset ||
+    today.toDateString() !== user.lastHeartReset.toDateString()
+  ) {
+    await prisma.user.update({
+      where: { id: user.id },
+      data: { hearts: 5, lastHeartReset: today },
+    });
+  }
 
   return { ...user, rank: behindOf + 1 };
 };
@@ -295,16 +307,14 @@ const updateLastPracticeDate = async (
     select: {
       lastPracticeDate: true,
       currentStreak: true,
-      streakFreezeBalance: true,
+      coins: true,
     },
   });
-
-  if (
-    (payload?.streakFreeze && !user.streakFreezeBalance) ||
-    (user.streakFreezeBalance && user.streakFreezeBalance < 1)
-  )
-    throw new ApiError(400, "Streak freeze balance is not enough");
-
+  if (payload.streakFreeze && user.coins < 250)
+    throw new ApiError(
+      400,
+      "You don't have enough coins to freeze your streak!"
+    );
   const today = new Date();
 
   const result = await prisma.$transaction(async tn => {
@@ -325,7 +335,7 @@ const updateLastPracticeDate = async (
         currentStreak: user.currentStreak + 1,
       } as Partial<User>;
       if (payload?.streakFreeze) {
-        updateData.streakFreezeBalance = user.streakFreezeBalance! - 1;
+        updateData.coins = user.coins - 250;
       }
       return await tn.user.update({
         where: { email },

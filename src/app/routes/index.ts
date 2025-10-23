@@ -10,6 +10,7 @@ import { lessonRoutes } from "../modules/lesson/lesson.routes";
 import { questionRoutes } from "../modules/question/question.routes";
 import { fileRoutes } from "../modules/uploadFile/uploadFile.routes";
 import { goldPackageRoutes } from "../modules/goldPackage/goldPackage.routes";
+import { paymentRoutes } from "../modules/payment/payment.routes";
 
 const router = Router();
 
@@ -25,6 +26,7 @@ const routes = [
   { path: "/questions", route: questionRoutes },
   { path: "/upload-files", route: fileRoutes },
   { path: "/gold-packages", route: goldPackageRoutes },
+  { path: "/payments", route: paymentRoutes },
 ];
 
 routes.forEach(route => {

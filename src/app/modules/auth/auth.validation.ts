@@ -17,6 +17,7 @@ export const loginZodSchema = z.object({
   email: z.string().email("Invalid email address").trim().toLowerCase(),
   password: z.string().min(1, "Password is required").trim(),
   fcmToken: z.string().optional(),
+  isMobileApp: z.boolean().default(false),
 });
 
 export type TLoginInput = z.infer<typeof loginZodSchema>;

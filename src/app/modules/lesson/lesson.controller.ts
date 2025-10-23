@@ -21,7 +21,8 @@ const createLesson = handleAsyncRequest(
 const getLessonsByChapter = handleAsyncRequest(
   async (req: TRequest, res: Response) => {
     const result = await lessonServices.getLessonsByChapter(
-      req.params.chapterId as string
+      req.params.chapterId as string,
+      req.user?.email as string
     );
     sendResponse(res, {
       message: "Lessons fetched successfully!",

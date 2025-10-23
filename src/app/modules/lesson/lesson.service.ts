@@ -33,7 +33,20 @@ const createLesson = async (payload: Lesson, file: TFile) => {
   return prisma.lesson.create({ data: payload });
 };
 
-const getLessonsByChapter = async (chapterId: string) => {
+const getLessonsByChapter = async (chapterId: string, email: string) => {
+  const now = new Date();
+  const user = await prisma.user.findUniqueOrThrow({ where: { email } });
+
+  if (
+    !user.lastHeartReset ||
+    now.toDateString() !== user.lastHeartReset.toDateString()
+  ) {
+    await prisma.user.update({
+      where: { id: user.id },
+      data: { hearts: 5, lastHeartReset: now },
+    });
+  }
+
   return await prisma.lesson.findMany({
     where: {
       chapterId,
