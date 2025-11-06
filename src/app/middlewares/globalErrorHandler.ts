@@ -1,8 +1,8 @@
 import { NextFunction, Request, Response } from "express";
-import { Prisma } from "../../../generated/prisma";
-import { PrismaClientKnownRequestError } from "../../../generated/prisma/runtime/library";
 import config from "../config";
 import ApiError from "./classes/ApiError";
+import { Prisma } from "@prisma/client";
+import { PrismaClientKnownRequestError } from "@prisma/client/runtime/library";
 
 const globalErrorHandler = (
   err: any,
@@ -60,6 +60,14 @@ const globalErrorHandler = (
     status = 422;
     message = err.issues[0]?.message || "Validation error!";
     error = err.issues;
+
+    if (error[0].code === "invalid_type") {
+      message = `${error[0].path[0]} must be a ${error[0].expected}!`;
+    } else if (error[0].code === "invalid_value") {
+      const secondPartMessage = `Invalid ${error[0].path[0]}! Expected one of ${error[0].values.join(" | ")}`;
+
+      message = secondPartMessage;
+    }
   } else if (err instanceof ApiError) {
     status = err.statusCode;
     message = err.message;
