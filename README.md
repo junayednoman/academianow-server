@@ -1,6 +1,7 @@
 # 🎓 AcademiaNow Backend
 
-AcademiaNow is an **educational platform** designed for students aged 12-17, focusing initially on **Geography**, with plans to expand into **History** and **Economics**.  
+AcademiaNow is an **educational platform** designed for students aged 12-17, focusing initially on **Geography**, with plans to expand into **History** and **Economics**.
+
 The platform uses a **gamified learning approach** inspired by Duolingo, offering interactive lessons, quizzes, and progress tracking to make learning fun, engaging, and effective.
 
 Students can access core content for free or subscribe to a premium model for **video explanations, unlimited practice, and extra rewards**. Admins can manage content, monitor progress, and handle subscriptions.
@@ -13,28 +14,28 @@ Students can access core content for free or subscribe to a premium model for **
   - Students can create an account, log in, and select their **subject** (Geography, History, Economics) and **school year**.
 
 - **Dashboard/Home Screen**
-  - View subjects and books  
-  - Track progress with **XP points, gold coins, and streaks**  
+  - View subjects and books
+  - Track progress with **XP points, gold coins, and streaks**
   - Access lessons and exercises
 
 - **Interactive Learning**
-  - Practice questions (word selection, image selection)  
-  - Instant feedback for correct/incorrect answers  
+  - Practice questions (word selection, image selection)
+  - Instant feedback for correct/incorrect answers
   - **Video explanations** for premium subscribers
 
 - **Gamification & Rewards**
-  - Earn **XP points, gold coins, and streaks**  
-  - Customize profile pictures using earned gold  
+  - Earn **XP points, gold coins, and streaks**
+  - Customize profile pictures using earned gold
   - Track streaks with freeze options
 
 - **Premium Subscription Features**
-  - Unlimited hearts (for mistakes)  
-  - Access exclusive video explanations  
-  - Earn gold to unlock premium content  
+  - Unlimited hearts (for mistakes)
+  - Access exclusive video explanations
+  - Earn gold to unlock premium content
   - Watch ads to gain extra hearts (limited)
 
 - **Group & Social Features (Optional)**
-  - Create and join study groups  
+  - Create and join study groups
   - Group leaderboard showing individual XP rankings
 
 ---
@@ -42,40 +43,40 @@ Students can access core content for free or subscribe to a premium model for **
 ### 2️⃣ Admin Features
 
 - **Admin Dashboard**
-  - View and manage user data, active users, and progress  
-  - Manage **premium subscriptions** and payments  
+  - View and manage user data, active users, and progress
+  - Manage **premium subscriptions** and payments
   - Monitor app usage statistics
 
 - **Content Management**
-  - Upload and manage **quiz questions, exercises, and lessons**  
-  - Add or edit subjects and books  
-  - Manage premium content such as videos  
+  - Upload and manage **quiz questions, exercises, and lessons**
+  - Add or edit subjects and books
+  - Manage premium content such as videos
   - Set subscription renewal times
 
 - **User Management**
-  - View and manage individual user accounts  
-  - Reset or change passwords  
+  - View and manage individual user accounts
+  - Reset or change passwords
   - Handle account deletions or suspensions
-
 
 ---
 
 ## 🚀 Tech Stack
 
-| Category        | Technology               |
-| --------------- | ----------------------- |
-| Language        | **TypeScript**          |
-| Framework       | **Node.js + Express.js** |
-| Database        | **PostgreSQL**          |
-| ORM             | **Prisma**              |
-| File Storage    | **AWS S3**              |
-| Validation      | **Zod**                 |
-| File Upload     | **Multer**              |
-| Email Service   | **Nodemailer**          |
+| Category      | Technology               |
+| ------------- | ------------------------ |
+| Language      | **TypeScript**           |
+| Framework     | **Node.js + Express.js** |
+| Database      | **PostgreSQL**           |
+| ORM           | **Prisma**               |
+| File Storage  | **AWS S3**               |
+| Validation    | **Zod**                  |
+| File Upload   | **Multer**               |
+| Email Service | **Nodemailer**           |
 
 ---
 
 ## 🗂️ Project Structure
+
 ```
 📦 academianow-backend
 ├── .vscode/ # VSCode workspace config
@@ -113,8 +114,8 @@ Students can access core content for free or subscribe to a premium model for **
 ### 1️⃣ Clone the repository
 
 ```bash
-git clone https://github.com/junayednoman/wisper-server
-cd wisper-server
+git clone https://github.com/junayednoman/academianow-server
+cd academianow-server
 ```
 
 ### 2️⃣ Install dependencies
@@ -191,6 +192,5 @@ All incoming requests are validated with **Zod** to ensure data accuracy and pre
 | `npm run seed:admin`   | Seed the database with the default admin account using ts-node-dev                  |
 
 ---
-
 
 **Made with ❤️ by [Junayed Noman](https://junayednoman.vercel.app)**
