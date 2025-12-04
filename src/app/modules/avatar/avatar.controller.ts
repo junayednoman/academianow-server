@@ -40,6 +40,20 @@ const updateAvatar = handleAsyncRequest(
   }
 );
 
+const purchaseAvatar = handleAsyncRequest(
+  async (req: TRequest, res: Response) => {
+    const { avatarId } = req.params;
+    const result = await avatarServices.purchaseAvatar(
+      req.user?.email as string,
+      avatarId as string
+    );
+    sendResponse(res, {
+      message: "Avatar purchased successfully!",
+      data: result,
+    });
+  }
+);
+
 const deleteAvatar = handleAsyncRequest(
   async (req: TRequest, res: Response) => {
     const { id } = req.params;
@@ -51,9 +65,23 @@ const deleteAvatar = handleAsyncRequest(
   }
 );
 
+const getMyPurchasedAvatars = handleAsyncRequest(
+  async (req: TRequest, res: Response) => {
+    const result = await avatarServices.getMyPurchasedAvatars(
+      req.user?.id as string
+    );
+    sendResponse(res, {
+      message: "Avatars retrieved successfully!",
+      data: result,
+    });
+  }
+);
+
 export const avatarController = {
   createAvatar,
   getAllAvatars,
   updateAvatar,
+  purchaseAvatar,
   deleteAvatar,
+  getMyPurchasedAvatars,
 };

@@ -73,21 +73,22 @@ model Question {
 }
 
 model Auth {
-  id                  String        @id @default(uuid())
-  email               String        @unique
+  id                  String            @id @default(uuid())
+  email               String            @unique
   password            String
-  needsPasswordChange Boolean       @default(false)
-  role                UserRole      @default(USER)
-  status              UserStatus    @default(PENDING)
-  notificationAllows  Boolean       @default(true)
-  createdAt           DateTime      @default(now())
-  updatedAt           DateTime      @updatedAt
+  needsPasswordChange Boolean           @default(false)
+  role                UserRole          @default(USER)
+  status              UserStatus        @default(PENDING)
+  notificationAllows  Boolean           @default(true)
+  createdAt           DateTime          @default(now())
+  updatedAt           DateTime          @updatedAt
   user                User?
   admin               Admin?
   otp                 Otp?
   fcmToken            String?
-  provider            LoginProvider @default(CREDENTIAL)
+  provider            LoginProvider     @default(CREDENTIAL)
   subscription        Subscription?
+  purchasedAvatars    PurchasedAvatar[]
 
   @@map("auths")
 }
@@ -136,6 +137,15 @@ model User {
   payment          Payment[]
 
   @@map("users")
+}
+
+model PurchasedAvatar {
+  id       String   @id @default(uuid())
+  avatarId String
+  avatar   Avatar   @relation(fields: [avatarId], references: [id])
+  authId   String
+  auth     Auth     @relation(fields: [authId], references: [id])
+  date     DateTime @default(now())
 }
 
 model Admin {
@@ -189,10 +199,12 @@ model Legal {
 }
 
 model Avatar {
-  id    String @id @default(uuid())
-  icon  String
-  index Int    @unique
-  user  User[]
+  id        String            @id @default(uuid())
+  icon      String
+  index     Int               @unique
+  user      User[]
+  price     Float             @default(0)
+  purchases PurchasedAvatar[]
 
   @@map("avatars")
 }

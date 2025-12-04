@@ -26,6 +26,18 @@ router.patch(
   avatarController.updateAvatar
 );
 
+router.post(
+  "/purchase-avatar/:avatarId",
+  authorize(UserRole.USER),
+  avatarController.purchaseAvatar
+);
+
+router.get(
+  "/my-purchased",
+  authorize(UserRole.USER),
+  avatarController.getMyPurchasedAvatars
+);
+
 router.delete("/:id", authorize(UserRole.ADMIN), avatarController.deleteAvatar);
 
 export const avatarRoutes = router;

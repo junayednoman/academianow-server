@@ -65,6 +65,71 @@ const updateAvatar = async (
   return result;
 };
 
+const purchaseAvatar = async (email: string, avatarId: string) => {
+  const avatar = await prisma.avatar.findUniqueOrThrow({
+    where: {
+      id: avatarId,
+    },
+  });
+
+  const auth = await prisma.auth.findUniqueOrThrow({
+    where: {
+      email: email,
+    },
+    select: {
+      id: true,
+      user: {
+        select: {
+          coins: true,
+        },
+      },
+    },
+  });
+
+  if (auth.user && auth.user.coins < avatar.price) {
+    throw new ApiError(400, "Not enough coins!");
+  }
+
+  const result = await prisma.$transaction(async tn => {
+    const result = await tn.purchasedAvatar.create({
+      data: {
+        avatarId,
+        authId: auth.id,
+      },
+    });
+
+    await tn.user.update({
+      where: {
+        email: email,
+      },
+      data: {
+        coins: { increment: -avatar.price },
+      },
+    });
+
+    return result;
+  });
+
+  return result;
+};
+
+const getMyPurchasedAvatars = async (id: string) => {
+  const result = await prisma.purchasedAvatar.findMany({
+    where: {
+      authId: id,
+    },
+    select: {
+      avatar: {
+        select: {
+          icon: true,
+          price: true,
+        },
+      },
+    },
+  });
+  return result;
+};
+
 const deleteAvatar = async (id: string) => {
   const avatar = await prisma.avatar.findUniqueOrThrow({
     where: {
@@ -98,4 +163,6 @@ export const avatarServices = {
   getAllAvatars,
   updateAvatar,
   deleteAvatar,
+  purchaseAvatar,
+  getMyPurchasedAvatars,
 };
