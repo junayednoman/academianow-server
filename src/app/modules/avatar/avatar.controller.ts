@@ -16,7 +16,7 @@ const createAvatar = handleAsyncRequest(
 );
 
 const getAllAvatars = handleAsyncRequest(
-  async (req: TRequest, res: Response) => {
+  async (_req: TRequest, res: Response) => {
     const result = await avatarServices.getAllAvatars();
     sendResponse(res, {
       message: "Avatars fetched successfully!",

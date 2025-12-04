@@ -3,7 +3,7 @@ import { ZodObject } from "zod";
 
 const handleZodValidation =
   (schema: ZodObject, { formData = false }: { formData?: boolean } = {}) =>
-  async (req: Request, res: Response, next: NextFunction) => {
+  async (req: Request, _res: Response, next: NextFunction) => {
     try {
       if (!formData) {
         await schema.parseAsync(req.body);

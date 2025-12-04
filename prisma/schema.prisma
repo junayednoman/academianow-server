@@ -12,7 +12,8 @@ model Subject {
   name  String @unique
   index Int    @unique
   image String
-  book  Book[]
+  books Book[]
+  users User[]
 
   @@map("subjects")
 }
@@ -24,6 +25,7 @@ model Book {
   name      String    @unique
   image     String
   chapter   Chapter[]
+  users     User[]
 
   @@map("books")
 }
@@ -118,7 +120,11 @@ model User {
   activeLesson     Lesson?         @relation(fields: [activeLessonId], references: [id])
   level            UserLevel
   schoolLevel      UserSchoolLevel
-  age              Int
+  subjectId        String
+  subject          Subject         @relation(fields: [subjectId], references: [id])
+  bookId           String
+  book             Book            @relation(fields: [bookId], references: [id])
+  age              Int?
   coins            Int             @default(0)
   hearts           Int             @default(5)
   lastHeartReset   DateTime        @default(now())

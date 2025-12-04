@@ -8,18 +8,47 @@ const globalErrorHandler = (
   err: any,
   req: Request,
   res: Response,
-  next: NextFunction
+  _next: NextFunction
 ) => {
   let status = 500;
-  let success = false;
+  const success = false;
   let message = "Something went wrong!";
   let error = err;
-  let stack = err.stack;
+  const stack = err.stack;
 
   if (err instanceof Prisma.PrismaClientValidationError) {
     status = 422;
     message = "Validation error!";
-    error = err.message;
+
+    const missingMatch = err.message.match(/Argument `(\w+)` is missing/);
+    const unknownMatch = err.message.match(/Unknown argument `(\w+)`/);
+    const invalidMatch = err.message.match(
+      /Argument `(\w+)`: Invalid value provided/
+    );
+    const invalidEnumMatch = err.message.match(
+      /Invalid value for argument `(\w+)`/
+    );
+
+    if (missingMatch) {
+      const field = missingMatch[1];
+      message = `Field '${field}' is required!`;
+      error = { message, path: field, code: "missing_field" };
+    } else if (unknownMatch) {
+      const field = unknownMatch[1];
+      message = `Field '${field}' does not exist on this model!`;
+      error = { message, path: field, code: "unknown_field" };
+    } else if (invalidMatch) {
+      const field = invalidMatch[1];
+      message = `Field '${field}' has an invalid value or type!`;
+      error = { message, path: field, code: "invalid_value" };
+    } else if (invalidEnumMatch) {
+      const field = invalidEnumMatch[1];
+      message = `Field '${field}' has an invalid enum value!`;
+      error = { message, path: field, code: "invalid_enum_value" };
+    } else {
+      message = err.message.split("\n")[0] || message;
+      error = err.message;
+    }
   } else if (
     err instanceof PrismaClientKnownRequestError ||
     err.name === "PrismaClientKnownRequestError"
@@ -53,7 +82,6 @@ const globalErrorHandler = (
         message = `${modelName} is associated with other data!`;
         status = 409;
       }
-
       error = err.meta;
     }
   } else if (err.name === "ZodError") {

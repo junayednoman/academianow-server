@@ -3,7 +3,7 @@ import { NextFunction, Request, Response } from "express";
 const routeNotFoundHandler = (
   req: Request,
   res: Response,
-  next: NextFunction
+  _next: NextFunction
 ) => {
   res.status(404).json({
     success: false,

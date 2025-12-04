@@ -1,7 +1,11 @@
 import { Router } from "express";
 import { userController } from "./user.controller";
 import handleZodValidation from "../../middlewares/handleZodValidation";
-import { signUpValidationSchema, updateUserZod } from "./user.validation";
+import {
+  signUpValidationSchema,
+  updateActiveLessonIdZod,
+  updateUserZod,
+} from "./user.validation";
 import authorize from "../../middlewares/authorize";
 import { UserRole } from "@prisma/client";
 
@@ -34,5 +38,14 @@ router.patch(
   authorize(UserRole.USER),
   userController.updateLastPracticeDate
 );
+
+router.patch(
+  "/update-active-lesson",
+  authorize(UserRole.USER),
+  handleZodValidation(updateActiveLessonIdZod),
+  userController.updateActiveLessonId
+);
+
+router.delete("/", authorize(UserRole.USER), userController.deleteUser);
 
 export const userRoutes = router;

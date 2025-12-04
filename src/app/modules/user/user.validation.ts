@@ -34,6 +34,8 @@ export const signUpValidationSchema = z.object({
       .nullish()
       .transform(val => val ?? null),
     practiceTime: z.string().min(1, "Practice time is required"),
+    subjectId: z.string().uuid("Invalid subjectId"),
+    bookId: z.string().uuid("Invalid bookId"),
     level: z.enum(["BASIS", "KADER", "TL", "HAVO", "GYMNASIUM"], {
       message: "Invalid user level",
     }),
@@ -50,11 +52,6 @@ export const signUpValidationSchema = z.object({
         message: "Invalid school level",
       }
     ),
-    age: z
-      .number()
-      .int("Age must be a whole number")
-      .min(5, "Age must be at least 5")
-      .max(100, "Age must be less than 100"),
   }),
 });
 
@@ -92,4 +89,8 @@ export const updateUserZod = z.object({
   coins: z.number({ message: "Coins must be a number" }).optional(),
   hearts: z.number({ message: "Hearts must be a number" }).optional(),
   xp: z.number({ message: "XP must be a number" }).optional(),
+  subjectId: z.string().uuid("Invalid subjectId").optional(),
+  bookId: z.string().uuid("Invalid bookId").optional(),
 });
+
+export const updateActiveLessonIdZod = z.object({ activeLessonId: z.string() });

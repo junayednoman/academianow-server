@@ -29,6 +29,17 @@ const userSignUp = async (payload: TSignUpInput) => {
   if (existingUser)
     throw new ApiError(400, "User already exists with this email!");
 
+  await prisma.subject.findUniqueOrThrow({
+    where: { id: payload.user.subjectId },
+  });
+
+  await prisma.book.findUniqueOrThrow({
+    where: {
+      id: payload.user.bookId,
+      subjectId: payload.user.subjectId,
+    },
+  });
+
   const authData = {
     email: payload.user.email,
     password: hashedPassword,
@@ -197,18 +208,6 @@ const getProfile = async (email: string) => {
             select: {
               id: true,
               name: true,
-              book: {
-                select: {
-                  id: true,
-                  name: true,
-                  subject: {
-                    select: {
-                      id: true,
-                      name: true,
-                    },
-                  },
-                },
-              },
             },
           },
         },
@@ -218,12 +217,24 @@ const getProfile = async (email: string) => {
           id: true,
         },
       },
+      book: {
+        select: {
+          id: true,
+          name: true,
+          subject: {
+            select: {
+              id: true,
+              name: true,
+            },
+          },
+        },
+      },
     },
   });
 
   // --- streak update logic ---
   const today = new Date();
-  
+
   const diff = user.lastPracticeDate
     ? differenceInCalendarDays(today, user.lastPracticeDate)
     : null;
@@ -285,6 +296,20 @@ const updateProfile = async (email: string, payload: Partial<User>) => {
     await prisma.question.findUniqueOrThrow({
       where: {
         id: payload.activeQuestionId,
+      },
+    });
+  }
+  if (payload.bookId) {
+    await prisma.book.findUniqueOrThrow({
+      where: {
+        id: payload.bookId,
+      },
+    });
+  }
+  if (payload.bookId) {
+    await prisma.book.findUniqueOrThrow({
+      where: {
+        id: payload.bookId,
       },
     });
   }
@@ -357,6 +382,7 @@ const getUserRanking = async () => {
     orderBy: {
       xp: "desc",
     },
+    take: 5,
     select: {
       name: true,
       avatar: {
@@ -371,6 +397,37 @@ const getUserRanking = async () => {
   return users;
 };
 
+const deleteUser = async (email: string) => {
+  const auth = await prisma.auth.findUniqueOrThrow({
+    where: {
+      email: email,
+    },
+  });
+
+  const result = await prisma.$transaction(async tn => {
+    await tn.otp.deleteMany({ where: { email } });
+    await tn.subscription.deleteMany({ where: { authId: auth.id } });
+    const user = await tn.user.deleteMany({ where: { email } });
+    await tn.auth.deleteMany({ where: { email } });
+
+    return user;
+  });
+
+  return result;
+};
+
+const updateActiveLessonId = async (activeLessonId: string, email: string) => {
+  const result = await prisma.user.update({
+    where: {
+      email,
+    },
+    data: {
+      activeLessonId,
+    },
+  });
+  return result;
+};
+
 export const userServices = {
   userSignUp,
   getAllUsers,
@@ -379,4 +436,6 @@ export const userServices = {
   updateProfile,
   updateLastPracticeDate,
   getUserRanking,
+  deleteUser,
+  updateActiveLessonId,
 };

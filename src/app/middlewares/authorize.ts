@@ -5,7 +5,7 @@ import ApiError from "./classes/ApiError";
 import config from "../config";
 
 const authorize = (...roles: string[]) => {
-  return async (req: TRequest, res: Response, next: NextFunction) => {
+  return async (req: TRequest, _res: Response, next: NextFunction) => {
     try {
       const authHeader = req.headers.authorization;
       if (!authHeader) {

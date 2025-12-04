@@ -14,8 +14,8 @@ router.post(
   chapterController.createChapter
 );
 
-router.get("/:bookId", chapterController.getChaptersByBookId);
 router.get("/single/:id", chapterController.getSingleChapter);
+router.get("/:bookId", chapterController.getChaptersByBookId);
 
 router.patch(
   "/:id",

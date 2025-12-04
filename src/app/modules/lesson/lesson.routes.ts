@@ -15,8 +15,16 @@ router.post(
   handleZodValidation(lessonZod, { formData: true }),
   lessonController.createLesson
 );
-router.get("/:chapterId", lessonController.getLessonsByChapter);
-router.get("/single/:id", lessonController.getSingleLesson);
+router.get(
+  "/:chapterId",
+  authorize(UserRole.USER, UserRole.ADMIN),
+  lessonController.getLessonsByChapter
+);
+router.get(
+  "/single/:id",
+  authorize(UserRole.USER, UserRole.ADMIN),
+  lessonController.getSingleLesson
+);
 router.patch(
   "/:id",
   authorize(UserRole.ADMIN),

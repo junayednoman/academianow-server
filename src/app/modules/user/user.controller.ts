@@ -76,6 +76,27 @@ const getUserRanking = handleAsyncRequest(
   }
 );
 
+const deleteUser = handleAsyncRequest(async (req: TRequest, res: Response) => {
+  const result = await userServices.deleteUser(req.user!.email);
+  sendResponse(res, {
+    message: "User deleted successfully!",
+    data: result,
+  });
+});
+
+const updateActiveLessonId = handleAsyncRequest(
+  async (req: TRequest, res: Response) => {
+    const result = await userServices.updateActiveLessonId(
+      req.body.activeLessonId,
+      req.user!.email
+    );
+    sendResponse(res, {
+      message: "Active lesson updated successfully!",
+      data: result,
+    });
+  }
+);
+
 export const userController = {
   userSignUp,
   getAllUsers,
@@ -84,4 +105,6 @@ export const userController = {
   updateProfile,
   updateLastPracticeDate,
   getUserRanking,
+  deleteUser,
+  updateActiveLessonId,
 };

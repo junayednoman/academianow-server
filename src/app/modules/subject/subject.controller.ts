@@ -19,7 +19,7 @@ const createSubject = handleAsyncRequest(
 );
 
 const getAllSubjects = handleAsyncRequest(
-  async (req: TRequest, res: Response) => {
+  async (_req: TRequest, res: Response) => {
     const result = await subjectServices.getAllSubjects();
     sendResponse(res, {
       message: "Subjects fetched successfully!",
