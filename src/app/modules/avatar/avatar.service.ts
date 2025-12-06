@@ -121,6 +121,7 @@ const getMyPurchasedAvatars = async (id: string) => {
     select: {
       avatar: {
         select: {
+          id: true,
           icon: true,
           price: true,
         },
