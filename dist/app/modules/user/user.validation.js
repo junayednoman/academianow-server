@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.updateUserZod = exports.signUpValidationSchema = void 0;
+exports.updateActiveLessonIdZod = exports.updateUserZod = exports.signUpValidationSchema = void 0;
 const zod_1 = require("zod");
 const global_validation_1 = require("../../validation/global.validation");
 const client_1 = require("@prisma/client");
@@ -48,6 +48,9 @@ exports.signUpValidationSchema = zod_1.z.object({
         ], {
             message: "Invalid school level",
         }),
+        age: zod_1.z
+            .number({ message: "Age must be a number!" })
+            .min(1, "Age is required!"),
     }),
 });
 exports.updateUserZod = zod_1.z.object({
@@ -83,4 +86,5 @@ exports.updateUserZod = zod_1.z.object({
     subjectId: zod_1.z.string().uuid("Invalid subjectId").optional(),
     bookId: zod_1.z.string().uuid("Invalid bookId").optional(),
 });
+exports.updateActiveLessonIdZod = zod_1.z.object({ activeLessonId: zod_1.z.string() });
 //# sourceMappingURL=user.validation.js.map

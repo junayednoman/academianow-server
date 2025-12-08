@@ -52,9 +52,7 @@ export const signUpValidationSchema = z.object({
         message: "Invalid school level",
       }
     ),
-    age: z
-      .number({ message: "Age must be a number!" })
-      .min(1, "Age is required!"),
+    age: z.number({ message: "Age must be a number!" }).optional(),
   }),
 });
 

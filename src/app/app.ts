@@ -14,7 +14,7 @@ app.use(cookieParser());
 
 app.get("/", (_req: Request, res: Response) => {
   res.send({
-    message: "Hello World!",
+    message: "Hello World from Academia Now server!",
   });
 });
 

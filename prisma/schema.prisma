@@ -131,6 +131,7 @@ model User {
   lastHeartReset   DateTime        @default(now())
   currentStreak    Int             @default(0)
   lastPracticeDate DateTime?
+  totalExercises   Int             @default(0)
   xp               Int             @default(0)
   createdAt        DateTime        @default(now())
   updatedAt        DateTime        @updatedAt

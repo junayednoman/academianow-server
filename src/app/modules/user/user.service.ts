@@ -423,6 +423,7 @@ const updateActiveLessonId = async (activeLessonId: string, email: string) => {
     },
     data: {
       activeLessonId,
+      totalExercises: { increment: 1 },
     },
   });
   return result;

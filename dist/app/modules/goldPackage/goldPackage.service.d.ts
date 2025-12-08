@@ -4,36 +4,36 @@ export declare const goldPackageServices: {
         id: string;
         createdAt: Date;
         updatedAt: Date;
-        golds: number;
         price: number;
+        golds: number;
     }>;
     getAllGoldPackages: () => Promise<{
         id: string;
         createdAt: Date;
         updatedAt: Date;
-        golds: number;
         price: number;
+        golds: number;
     }[]>;
     getSingleGoldPackage: (id: string) => Promise<{
         id: string;
         createdAt: Date;
         updatedAt: Date;
-        golds: number;
         price: number;
+        golds: number;
     } | null>;
     updateGoldPackage: (id: string, payload: Partial<GoldPackage>) => Promise<{
         id: string;
         createdAt: Date;
         updatedAt: Date;
-        golds: number;
         price: number;
+        golds: number;
     }>;
     deleteGoldPackage: (id: string) => Promise<{
         id: string;
         createdAt: Date;
         updatedAt: Date;
-        golds: number;
         price: number;
+        golds: number;
     }>;
 };
 //# sourceMappingURL=goldPackage.service.d.ts.map

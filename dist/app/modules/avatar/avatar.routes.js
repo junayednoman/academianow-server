@@ -15,6 +15,8 @@ const router = (0, express_1.Router)();
 router.post("/", (0, authorize_1.default)(client_1.UserRole.ADMIN), awss3_1.upload.single("icon"), (0, handleZodValidation_1.default)(avatar_validation_1.avatarZod, { formData: true }), avatar_controller_1.avatarController.createAvatar);
 router.get("/", avatar_controller_1.avatarController.getAllAvatars);
 router.patch("/:id", (0, authorize_1.default)(client_1.UserRole.ADMIN), awss3_1.upload.single("icon"), (0, handleZodValidation_1.default)(avatar_validation_1.avatarZod.partial(), { formData: true }), avatar_controller_1.avatarController.updateAvatar);
+router.post("/purchase-avatar/:avatarId", (0, authorize_1.default)(client_1.UserRole.USER), avatar_controller_1.avatarController.purchaseAvatar);
+router.get("/my-purchased", (0, authorize_1.default)(client_1.UserRole.USER), avatar_controller_1.avatarController.getMyPurchasedAvatars);
 router.delete("/:id", (0, authorize_1.default)(client_1.UserRole.ADMIN), avatar_controller_1.avatarController.deleteAvatar);
 exports.avatarRoutes = router;
 //# sourceMappingURL=avatar.routes.js.map

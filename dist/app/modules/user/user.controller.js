@@ -65,6 +65,13 @@ const deleteUser = (0, handleAsyncRequest_1.default)(async (req, res) => {
         data: result,
     });
 });
+const updateActiveLessonId = (0, handleAsyncRequest_1.default)(async (req, res) => {
+    const result = await user_service_1.userServices.updateActiveLessonId(req.body.activeLessonId, req.user.email);
+    (0, sendResponse_1.sendResponse)(res, {
+        message: "Active lesson updated successfully!",
+        data: result,
+    });
+});
 exports.userController = {
     userSignUp,
     getAllUsers,
@@ -74,5 +81,6 @@ exports.userController = {
     updateLastPracticeDate,
     getUserRanking,
     deleteUser,
+    updateActiveLessonId,
 };
 //# sourceMappingURL=user.controller.js.map

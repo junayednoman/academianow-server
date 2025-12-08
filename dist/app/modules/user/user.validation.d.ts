@@ -33,6 +33,7 @@ export declare const signUpValidationSchema: z.ZodObject<{
             FIFTH_YEAR: "FIFTH_YEAR";
             SIXTH_YEAR: "SIXTH_YEAR";
         }>;
+        age: z.ZodNumber;
     }, z.core.$strip>;
 }, z.core.$strip>;
 export type TSignUpInput = z.infer<typeof signUpValidationSchema> & {
@@ -66,5 +67,8 @@ export declare const updateUserZod: z.ZodObject<{
     xp: z.ZodOptional<z.ZodNumber>;
     subjectId: z.ZodOptional<z.ZodString>;
     bookId: z.ZodOptional<z.ZodString>;
+}, z.core.$strip>;
+export declare const updateActiveLessonIdZod: z.ZodObject<{
+    activeLessonId: z.ZodString;
 }, z.core.$strip>;
 //# sourceMappingURL=user.validation.d.ts.map

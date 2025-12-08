@@ -1,1 +1,1 @@
-{"version":3,"file":"avatar.controller.d.ts","sourceRoot":"","sources":["../../../../src/app/modules/avatar/avatar.controller.ts"],"names":[],"mappings":"AAAA,OAAO,EAAE,QAAQ,EAAE,MAAM,SAAS,CAAC;AAqDnC,eAAO,MAAM,gBAAgB;;;;;CAK5B,CAAC"}
+{"version":3,"file":"avatar.controller.d.ts","sourceRoot":"","sources":["../../../../src/app/modules/avatar/avatar.controller.ts"],"names":[],"mappings":"AAAA,OAAO,EAAE,QAAQ,EAAE,MAAM,SAAS,CAAC;AA+EnC,eAAO,MAAM,gBAAgB;;;;;;;CAO5B,CAAC"}

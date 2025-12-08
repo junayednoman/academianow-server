@@ -8,5 +8,6 @@ export declare const userController: {
     updateLastPracticeDate: (req: Request, res: Response, next: import("express").NextFunction) => Promise<void>;
     getUserRanking: (req: Request, res: Response, next: import("express").NextFunction) => Promise<void>;
     deleteUser: (req: Request, res: Response, next: import("express").NextFunction) => Promise<void>;
+    updateActiveLessonId: (req: Request, res: Response, next: import("express").NextFunction) => Promise<void>;
 };
 //# sourceMappingURL=user.controller.d.ts.map

@@ -18,6 +18,7 @@ router.get("/profile", (0, authorize_1.default)(client_1.UserRole.USER), user_co
 router.get("/:id", (0, authorize_1.default)(client_1.UserRole.ADMIN, client_1.UserRole.USER), user_controller_1.userController.getSingleUser);
 router.patch("/", (0, authorize_1.default)(client_1.UserRole.USER), (0, handleZodValidation_1.default)(user_validation_1.updateUserZod), user_controller_1.userController.updateProfile);
 router.patch("/update-practice-date", (0, authorize_1.default)(client_1.UserRole.USER), user_controller_1.userController.updateLastPracticeDate);
+router.patch("/update-active-lesson", (0, authorize_1.default)(client_1.UserRole.USER), (0, handleZodValidation_1.default)(user_validation_1.updateActiveLessonIdZod), user_controller_1.userController.updateActiveLessonId);
 router.delete("/", (0, authorize_1.default)(client_1.UserRole.USER), user_controller_1.userController.deleteUser);
 exports.userRoutes = router;
 //# sourceMappingURL=user.routes.js.map

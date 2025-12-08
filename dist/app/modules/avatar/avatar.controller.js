@@ -29,6 +29,14 @@ const updateAvatar = (0, handleAsyncRequest_1.default)(async (req, res) => {
         data: result,
     });
 });
+const purchaseAvatar = (0, handleAsyncRequest_1.default)(async (req, res) => {
+    const { avatarId } = req.params;
+    const result = await avatar_service_1.avatarServices.purchaseAvatar(req.user?.email, avatarId);
+    (0, sendResponse_1.sendResponse)(res, {
+        message: "Avatar purchased successfully!",
+        data: result,
+    });
+});
 const deleteAvatar = (0, handleAsyncRequest_1.default)(async (req, res) => {
     const { id } = req.params;
     const result = await avatar_service_1.avatarServices.deleteAvatar(id);
@@ -37,10 +45,19 @@ const deleteAvatar = (0, handleAsyncRequest_1.default)(async (req, res) => {
         data: result,
     });
 });
+const getMyPurchasedAvatars = (0, handleAsyncRequest_1.default)(async (req, res) => {
+    const result = await avatar_service_1.avatarServices.getMyPurchasedAvatars(req.user?.id);
+    (0, sendResponse_1.sendResponse)(res, {
+        message: "Avatars retrieved successfully!",
+        data: result,
+    });
+});
 exports.avatarController = {
     createAvatar,
     getAllAvatars,
     updateAvatar,
+    purchaseAvatar,
     deleteAvatar,
+    getMyPurchasedAvatars,
 };
 //# sourceMappingURL=avatar.controller.js.map

@@ -57,6 +57,64 @@ const updateAvatar = async (id, payload, file) => {
     }
     return result;
 };
+const purchaseAvatar = async (email, avatarId) => {
+    const avatar = await prisma_1.default.avatar.findUniqueOrThrow({
+        where: {
+            id: avatarId,
+        },
+    });
+    const auth = await prisma_1.default.auth.findUniqueOrThrow({
+        where: {
+            email: email,
+        },
+        select: {
+            id: true,
+            user: {
+                select: {
+                    coins: true,
+                },
+            },
+        },
+    });
+    if (auth.user && auth.user.coins < avatar.price) {
+        throw new ApiError_1.default(400, "Not enough coins!");
+    }
+    const result = await prisma_1.default.$transaction(async (tn) => {
+        const result = await tn.purchasedAvatar.create({
+            data: {
+                avatarId,
+                authId: auth.id,
+            },
+        });
+        await tn.user.update({
+            where: {
+                email: email,
+            },
+            data: {
+                coins: { increment: -avatar.price },
+            },
+        });
+        return result;
+    });
+    return result;
+};
+const getMyPurchasedAvatars = async (id) => {
+    const result = await prisma_1.default.purchasedAvatar.findMany({
+        where: {
+            authId: id,
+        },
+        select: {
+            avatar: {
+                select: {
+                    id: true,
+                    icon: true,
+                    price: true,
+                },
+            },
+        },
+    });
+    return result;
+};
 const deleteAvatar = async (id) => {
     const avatar = await prisma_1.default.avatar.findUniqueOrThrow({
         where: {
@@ -85,5 +143,7 @@ exports.avatarServices = {
     getAllAvatars,
     updateAvatar,
     deleteAvatar,
+    purchaseAvatar,
+    getMyPurchasedAvatars,
 };
 //# sourceMappingURL=avatar.service.js.map
