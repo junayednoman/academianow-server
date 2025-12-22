@@ -4,9 +4,13 @@ import config from "./config";
 import { Server } from "http";
 
 const main = () => {
-  const server: Server = app.listen(config.port, () => {
-    console.log(`Server is running on port ${config.port}`);
-  });
+  const server: Server = app.listen(
+    Number(config.port),
+    config.ip as string,
+    () => {
+      console.log(`app is listening on port ${config.port}`);
+    }
+  );
 
   process.on("uncaughtException", error => {
     log(error);

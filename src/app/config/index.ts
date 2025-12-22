@@ -6,6 +6,7 @@ dotenv.config({ path: path.join(process.cwd(), ".env") });
 export default {
   env: process.env.NODE_ENV,
   port: process.env.PORT,
+  ip: process.env.IP,
   email: {
     emailSendingApi: process.env.SEND_EMAIL_URL,
   },
@@ -23,7 +24,6 @@ export default {
     accessKeyId: process.env.S3_BUCKET_ACCESS_KEY,
     secretAccessKey: process.env.S3_BUCKET_SECRET_ACCESS_KEY,
     s3BaseUrl: process.env.S3_BASE_URL,
-    s3_api: process.env.S3_API,
     region: process.env.AWS_REGION,
     bucket: process.env.AWS_BUCKET_NAME,
     endpoint: process.env.SPACES_API,
