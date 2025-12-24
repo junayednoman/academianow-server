@@ -11,6 +11,7 @@ import { questionRoutes } from "../modules/question/question.routes";
 import { fileRoutes } from "../modules/uploadFile/uploadFile.routes";
 import { goldPackageRoutes } from "../modules/goldPackage/goldPackage.routes";
 import { legalRoutes } from "../modules/legal/legal.routes";
+import { dashboardRoutes } from "../modules/dashboard/dashboard.routes";
 
 const router = Router();
 
@@ -26,6 +27,7 @@ const routes = [
   { path: "/questions", route: questionRoutes },
   { path: "/upload-files", route: fileRoutes },
   { path: "/gold-packages", route: goldPackageRoutes },
+  { path: "/dashboard", route: dashboardRoutes },
   { path: "/legal", route: legalRoutes },
 ];
 
