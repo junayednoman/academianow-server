@@ -333,14 +333,38 @@ const updateLastPracticeDate = async (
       lastPracticeDate: true,
       currentStreak: true,
       coins: true,
+      totalExercises: true,
+      lastStreakFreezeDate: true,
+      totalStreakFreeze: true,
     },
   });
-  if (payload.streakFreeze && user.coins < 250)
-    throw new ApiError(
-      400,
-      "You don't have enough coins to freeze your streak!"
-    );
+
   const today = new Date();
+
+  const updateData = {
+    lastPracticeDate: today,
+    currentStreak: user.currentStreak + 1,
+  } as Partial<User>;
+
+  if (payload.streakFreeze) {
+    if (user.lastStreakFreezeDate) {
+      const diff = differenceInCalendarDays(today, user.lastStreakFreezeDate);
+      if (diff < 7 && user.totalStreakFreeze >= 3) {
+        throw new ApiError(
+          400,
+          "You can only freeze your streak 3 times in a week!"
+        );
+      } else if (diff >= 7 && user.totalStreakFreeze >= 3) {
+        updateData.totalStreakFreeze = 1;
+      }
+    }
+    if (user.coins < 250) {
+      throw new ApiError(
+        400,
+        "You don't have enough coins to freeze your streak!"
+      );
+    }
+  }
 
   const result = await prisma.$transaction(async tn => {
     if (!user.lastPracticeDate) {
@@ -355,12 +379,10 @@ const updateLastPracticeDate = async (
     if (diff === 0) return;
 
     if (diff === 1) {
-      const updateData = {
-        lastPracticeDate: today,
-        currentStreak: user.currentStreak + 1,
-      } as Partial<User>;
       if (payload?.streakFreeze) {
         updateData.coins = user.coins - 250;
+        updateData.lastStreakFreezeDate = today;
+        updateData.totalExercises = (user.totalExercises || 0) + 1;
       }
       return await tn.user.update({
         where: { email },

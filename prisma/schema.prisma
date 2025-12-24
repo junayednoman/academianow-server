@@ -106,36 +106,38 @@ model Otp {
 }
 
 model User {
-  id               String          @id @default(uuid())
-  email            String          @unique
-  auth             Auth            @relation(fields: [email], references: [email])
-  name             String
-  phone            String?
-  avatarId         String?
-  avatar           Avatar?         @relation(fields: [avatarId], references: [id])
-  signUpSource     SignUpSource?
-  practiceTime     String
-  activeQuestionId String?
-  activeQuestion   Question?       @relation(fields: [activeQuestionId], references: [id])
-  activeLessonId   String?
-  activeLesson     Lesson?         @relation(fields: [activeLessonId], references: [id])
-  level            UserLevel
-  schoolLevel      UserSchoolLevel
-  subjectId        String
-  subject          Subject         @relation(fields: [subjectId], references: [id])
-  bookId           String
-  book             Book            @relation(fields: [bookId], references: [id])
-  age              Int?
-  coins            Int             @default(0)
-  hearts           Int             @default(5)
-  lastHeartReset   DateTime        @default(now())
-  currentStreak    Int             @default(0)
-  lastPracticeDate DateTime?
-  totalExercises   Int             @default(0)
-  xp               Int             @default(0)
-  createdAt        DateTime        @default(now())
-  updatedAt        DateTime        @updatedAt
-  payment          Payment[]
+  id                   String          @id @default(uuid())
+  email                String          @unique
+  auth                 Auth            @relation(fields: [email], references: [email])
+  name                 String
+  phone                String?
+  avatarId             String?
+  avatar               Avatar?         @relation(fields: [avatarId], references: [id])
+  signUpSource         SignUpSource?
+  practiceTime         String
+  activeQuestionId     String?
+  activeQuestion       Question?       @relation(fields: [activeQuestionId], references: [id])
+  activeLessonId       String?
+  activeLesson         Lesson?         @relation(fields: [activeLessonId], references: [id])
+  level                UserLevel
+  schoolLevel          UserSchoolLevel
+  subjectId            String
+  subject              Subject         @relation(fields: [subjectId], references: [id])
+  bookId               String
+  book                 Book            @relation(fields: [bookId], references: [id])
+  age                  Int?
+  coins                Int             @default(0)
+  hearts               Int             @default(5)
+  lastHeartReset       DateTime        @default(now())
+  currentStreak        Int             @default(0)
+  lastPracticeDate     DateTime?
+  totalExercises       Int             @default(0)
+  totalStreakFreeze    Int             @default(0)
+  lastStreakFreezeDate DateTime?
+  xp                   Int             @default(0)
+  createdAt            DateTime        @default(now())
+  updatedAt            DateTime        @updatedAt
+  payment              Payment[]
 
   @@map("users")
 }

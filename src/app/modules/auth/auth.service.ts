@@ -176,6 +176,11 @@ const sendOtp = async (email: string) => {
           name: true,
         },
       },
+      admin: {
+        select: {
+          name: true,
+        },
+      },
     },
   });
 
@@ -202,7 +207,10 @@ const sendOtp = async (email: string) => {
   // send email
   const subject = "Your One-Time Password (OTP) for Password Reset";
   const path = "./src/app/emailTemplates/otp.html";
-  sendEmail(email, subject, path, { otp, name: auth.user?.name as string });
+  sendEmail(email, subject, path, {
+    otp,
+    name: (auth.user?.name as string) || (auth.admin?.name as string),
+  });
 };
 
 const resetPassword = async (payload: TResetPasswordInput) => {
@@ -213,6 +221,11 @@ const resetPassword = async (payload: TResetPasswordInput) => {
     },
     select: {
       user: {
+        select: {
+          name: true,
+        },
+      },
+      admin: {
         select: {
           name: true,
         },
@@ -251,7 +264,9 @@ const resetPassword = async (payload: TResetPasswordInput) => {
   // send email
   const subject = "Your Academianow Password Has Been Reset 🎉";
   const path = "./src/app/emailTemplates/passwordResetSuccess.html";
-  const replacements = { name: auth.user?.name as string };
+  const replacements = {
+    name: (auth.user?.name as string) || (auth.admin?.name as string),
+  };
   sendEmail(payload.email, subject, path, replacements);
 };
 
