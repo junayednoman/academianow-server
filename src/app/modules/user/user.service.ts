@@ -143,7 +143,11 @@ const getAllUsers = async (query: Record<string, any>, options: TOptions) => {
     select: {
       id: true,
       status: true,
-      subscription: true,
+      subscription: {
+        select: {
+          id: true,
+        },
+      },
       user: {
         select: {
           name: true,
@@ -429,6 +433,7 @@ const deleteUser = async (email: string) => {
   const result = await prisma.$transaction(async tn => {
     await tn.otp.deleteMany({ where: { email } });
     await tn.subscription.deleteMany({ where: { authId: auth.id } });
+    await tn.purchasedAvatar.deleteMany({ where: { authId: auth.id } });
     const user = await tn.user.deleteMany({ where: { email } });
     await tn.auth.deleteMany({ where: { email } });
 

@@ -89,6 +89,7 @@ model Auth {
   provider            LoginProvider     @default(CREDENTIAL)
   subscription        Subscription?
   purchasedAvatars    PurchasedAvatar[]
+  notifications       Notification[]
 
   @@map("auths")
 }
@@ -220,6 +221,17 @@ model GoldPackage {
   updatedAt DateTime @updatedAt
 
   @@map("gold_packages")
+}
+
+model Notification {
+  id         String   @id @default(uuid())
+  receiverId String
+  receiver   Auth     @relation(fields: [receiverId], references: [id])
+  title      String
+  body       String
+  date       DateTime @default(now())
+
+  @@map("notifications")
 }
 
 enum LoginProvider {
