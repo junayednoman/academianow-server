@@ -13,6 +13,7 @@ import { goldPackageRoutes } from "../modules/goldPackage/goldPackage.routes";
 import { legalRoutes } from "../modules/legal/legal.routes";
 import { dashboardRoutes } from "../modules/dashboard/dashboard.routes";
 import { notificationRoutes } from "../modules/notification/notification.routes";
+import { paymentRoutes } from "../modules/payment/payment.routes";
 
 const router = Router();
 
@@ -29,6 +30,7 @@ const routes = [
   { path: "/upload-files", route: fileRoutes },
   { path: "/gold-packages", route: goldPackageRoutes },
   { path: "/dashboard", route: dashboardRoutes },
+  { path: "/payments", route: paymentRoutes },
   { path: "/notifications", route: notificationRoutes },
   { path: "/legal", route: legalRoutes },
 ];

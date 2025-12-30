@@ -90,6 +90,7 @@ model Auth {
   subscription        Subscription?
   purchasedAvatars    PurchasedAvatar[]
   notifications       Notification[]
+  payments            Payment[]
 
   @@map("auths")
 }
@@ -138,7 +139,6 @@ model User {
   xp                   Int             @default(0)
   createdAt            DateTime        @default(now())
   updatedAt            DateTime        @updatedAt
-  payment              Payment[]
 
   @@map("users")
 }
@@ -180,16 +180,15 @@ model Subscription {
 }
 
 model Payment {
-  id             String        @id @default(uuid())
-  subscriptionId String
-  subscription   Subscription  @relation(fields: [subscriptionId], references: [id])
-  userId         String
-  user           User          @relation(fields: [userId], references: [id])
-  amount         Float
-  status         PaymentStatus
+  id             String         @id @default(uuid())
+  authId         String
+  auth           Auth           @relation(fields: [authId], references: [id])
   transactionId  String
-  currency       String
-  createdAt      DateTime      @default(now())
+  subscriptionId String?
+  subscription   Subscription?  @relation(fields: [subscriptionId], references: [id])
+  amount         Int
+  purpose        PaymentPurpose
+  paidAt         DateTime       @default(now())
 
   @@map("payments")
 }
@@ -234,14 +233,14 @@ model Notification {
   @@map("notifications")
 }
 
+enum PaymentPurpose {
+  SUBSCRIPTION
+  GOLD
+}
+
 enum LoginProvider {
   GOOGLE
   CREDENTIAL
-}
-
-enum PaymentStatus {
-  PAID
-  UNPAID
 }
 
 enum SubscriptionStatus {

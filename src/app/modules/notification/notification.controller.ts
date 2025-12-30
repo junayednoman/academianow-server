@@ -11,6 +11,18 @@ const createNotification = handleAsyncRequest(async (req: TRequest, res) => {
   });
 });
 
+const practiceTargetComplete = handleAsyncRequest(
+  async (req: TRequest, res) => {
+    const result = await notificationService.practiceTargetComplete(
+      req.user!.id
+    );
+    sendResponse(res, {
+      message: "Notification sent successfully!",
+      data: result,
+    });
+  }
+);
+
 const getNotifications = handleAsyncRequest(async (req: TRequest, res) => {
   const result = await notificationService.getNotifications(req.user!.id);
   sendResponse(res, {
@@ -33,5 +45,6 @@ const deleteNotifications = handleAsyncRequest(async (req: TRequest, res) => {
 export const notificationController = {
   createNotification,
   getNotifications,
-  deleteNotifications
+  deleteNotifications,
+  practiceTargetComplete,
 };

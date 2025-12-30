@@ -2,6 +2,7 @@ import { Router } from "express";
 import { userController } from "./user.controller";
 import handleZodValidation from "../../middlewares/handleZodValidation";
 import {
+  handleLastLessonCompletionZod,
   signUpValidationSchema,
   updateActiveLessonIdZod,
   updateUserZod,
@@ -44,6 +45,13 @@ router.patch(
   authorize(UserRole.USER),
   handleZodValidation(updateActiveLessonIdZod),
   userController.updateActiveLessonId
+);
+
+router.patch(
+  "/handle-last-lesson-completion",
+  authorize(UserRole.USER),
+  handleZodValidation(handleLastLessonCompletionZod),
+  userController.handleLastLessonCompletion
 );
 
 router.delete("/", authorize(UserRole.USER), userController.deleteUser);

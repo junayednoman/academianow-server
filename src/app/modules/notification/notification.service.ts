@@ -1,4 +1,20 @@
 import prisma from "../../utils/prisma";
+import { sendNotification } from "../../utils/sendNotification";
+
+const practiceTargetComplete = async (authId: string) => {
+  const auth = await prisma.auth.findUniqueOrThrow({
+    where: { id: authId },
+    select: { fcmToken: true },
+  });
+  const payload = {
+    title: "Practice Target Completed",
+    body: "Congratulations! You have completed your practice target today.",
+    receiverId: authId,
+    date: new Date(),
+  };
+
+  await sendNotification([auth.fcmToken as string], payload);
+};
 
 const createNotification = async (userId: string) => {
   const payload = {
@@ -36,4 +52,5 @@ export const notificationService = {
   createNotification,
   getNotifications,
   deleteNotifications,
+  practiceTargetComplete
 };

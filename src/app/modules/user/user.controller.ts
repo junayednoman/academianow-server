@@ -97,6 +97,19 @@ const updateActiveLessonId = handleAsyncRequest(
   }
 );
 
+const handleLastLessonCompletion = handleAsyncRequest(
+  async (req: TRequest, res: Response) => {
+    const result = await userServices.handleLastLessonCompletion(
+      req.user!.id,
+      req.body
+    );
+    sendResponse(res, {
+      message: "Active lesson updated successfully!",
+      data: result,
+    });
+  }
+);
+
 export const userController = {
   userSignUp,
   getAllUsers,
@@ -107,4 +120,5 @@ export const userController = {
   getUserRanking,
   deleteUser,
   updateActiveLessonId,
+  handleLastLessonCompletion,
 };

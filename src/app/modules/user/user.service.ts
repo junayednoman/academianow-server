@@ -47,6 +47,23 @@ const userSignUp = async (payload: TSignUpInput) => {
   };
 
   const otp = generateOTP();
+  const firstChapter = await prisma.chapter.findFirst({
+    where: { bookId: payload.user.bookId, index: 1 },
+    select: { id: true },
+  });
+  const firstLesson = await prisma.lesson.findFirst({
+    where: { chapterId: firstChapter?.id, index: 1 },
+    select: { id: true },
+  });
+
+  const userPayload = {
+    ...payload.user,
+  } as any;
+
+  if (firstLesson?.id) {
+    userPayload.activeLessonId = firstLesson.id;
+  }
+
   const result = await prisma.$transaction(async tn => {
     await tn.auth.upsert({
       where: {
@@ -58,8 +75,8 @@ const userSignUp = async (payload: TSignUpInput) => {
 
     const result = await tn.user.upsert({
       where: { email: payload.user.email },
-      update: payload.user,
-      create: payload.user,
+      update: userPayload,
+      create: userPayload,
     });
 
     const hashedOtp = await bcrypt.hash(otp.toString(), 10);
@@ -132,6 +149,9 @@ const getAllUsers = async (query: Record<string, any>, options: TOptions) => {
 
   andConditions.push({
     role: UserRole.USER,
+    status: {
+      not: UserStatus.PENDING,
+    },
   });
 
   const whereConditions: Prisma.AuthWhereInput =
@@ -278,7 +298,7 @@ const getProfile = async (email: string) => {
     });
   }
 
-  return { ...user, rank: behindOf + 1 };
+  return { ...user, rank: behindOf + 1, isPremium: false };
 };
 
 const updateProfile = async (email: string, payload: Partial<User>) => {
@@ -456,6 +476,73 @@ const updateActiveLessonId = async (activeLessonId: string, email: string) => {
   return result;
 };
 
+const handleLastLessonCompletion = async (
+  authId: string,
+  payload: { golds: number; xps: number }
+) => {
+  const auth = await prisma.auth.findUniqueOrThrow({
+    where: { id: authId },
+    select: {
+      user: {
+        select: {
+          id: true,
+          activeLessonId: true,
+          xp: true,
+          coins: true,
+          totalExercises: true,
+        },
+      },
+    },
+  });
+  const currentLesson = await prisma.lesson.findUniqueOrThrow({
+    where: { id: auth.user?.activeLessonId! },
+    select: { chapterId: true, index: true },
+  });
+
+  const nextLesson = await prisma.lesson.findFirst({
+    where: {
+      chapterId: currentLesson.chapterId,
+      index: currentLesson.index + 1,
+    },
+    select: { id: true },
+  });
+
+  let nextLessonId = null;
+  if (nextLesson) {
+    const firstLesson = await prisma.lesson.findFirst({
+      where: {
+        chapterId: nextLesson.id,
+        index: 1,
+      },
+      select: { id: true },
+    });
+
+    nextLessonId = firstLesson ? firstLesson.id : null;
+  }
+
+  const userPayload = {
+    xp: Number(auth.user!.xp + payload.xps),
+    coins: Number(auth.user!.coins + payload.golds),
+    totalExercises: Number(auth.user!.totalExercises + 1),
+  };
+
+  if (nextLessonId) {
+    Object.assign(userPayload, { activeLessonId: nextLessonId });
+  }
+
+  const result = await prisma.$transaction(async tn => {
+    const updatedUser = await tn.user.update({
+      where: {
+        id: auth.user?.id!,
+      },
+      data: userPayload,
+    });
+    return updatedUser;
+  });
+
+  return result;
+};
+
 export const userServices = {
   userSignUp,
   getAllUsers,
@@ -466,4 +553,5 @@ export const userServices = {
   getUserRanking,
   deleteUser,
   updateActiveLessonId,
+  handleLastLessonCompletion,
 };

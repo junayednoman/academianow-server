@@ -22,7 +22,7 @@ const getUserOverview = async (query: Record<string, unknown>) => {
   const subscribedUsers = await prisma.auth.count({
     where: whereConditions,
   });
-  const totalUsers = await prisma.auth.count({
+  const activeUsers = await prisma.auth.count({
     where: {
       NOT: { role: "ADMIN" },
       status: UserStatus.ACTIVE,
@@ -39,6 +39,7 @@ const getUserOverview = async (query: Record<string, unknown>) => {
         gte: startDate,
         lte: endDate,
       },
+      status: UserStatus.ACTIVE,
       role: role ? role : undefined,
     },
     select: { createdAt: true },
@@ -56,7 +57,7 @@ const getUserOverview = async (query: Record<string, unknown>) => {
     users: monthlyCounts[index],
   }));
 
-  return { totalUsers, subscribedUsers, usersChartData };
+  return { activeUsers, subscribedUsers, usersChartData };
 };
 
 export const dashboardServices = {

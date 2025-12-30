@@ -95,3 +95,7 @@ export const updateUserZod = z.object({
 });
 
 export const updateActiveLessonIdZod = z.object({ activeLessonId: z.string() });
+export const handleLastLessonCompletionZod = z.object({
+  xps: z.number().min(0, "XP must be at least 0"),
+  golds: z.number().min(0, "Golds must be at least 0"),
+});

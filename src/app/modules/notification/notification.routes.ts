@@ -13,6 +13,12 @@ router.post(
   notificationController.createNotification
 );
 
+router.post(
+  "/practice-target-complete",
+  authorize(UserRole.USER),
+  notificationController.practiceTargetComplete
+);
+
 router.get(
   "/",
   authorize(UserRole.USER, UserRole.ADMIN),
