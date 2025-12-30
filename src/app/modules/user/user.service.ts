@@ -349,7 +349,7 @@ const updateProfile = async (email: string, payload: Partial<User>) => {
 
 const updateLastPracticeDate = async (
   email: string,
-  payload: { streakFreeze: boolean }
+  payload: { streakFreeze?: boolean }
 ) => {
   const user = await prisma.user.findUniqueOrThrow({
     where: { email },
@@ -370,7 +370,7 @@ const updateLastPracticeDate = async (
     currentStreak: user.currentStreak + 1,
   } as Partial<User>;
 
-  if (payload.streakFreeze) {
+  if (payload?.streakFreeze) {
     if (user.lastStreakFreezeDate) {
       const diff = differenceInCalendarDays(today, user.lastStreakFreezeDate);
       if (diff < 7 && user.totalStreakFreeze >= 3) {

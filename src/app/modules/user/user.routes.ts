@@ -5,6 +5,7 @@ import {
   handleLastLessonCompletionZod,
   signUpValidationSchema,
   updateActiveLessonIdZod,
+  updateLastPracticeDate,
   updateUserZod,
 } from "./user.validation";
 import authorize from "../../middlewares/authorize";
